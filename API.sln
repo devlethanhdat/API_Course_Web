@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35303.130
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{CBD6E885-D507-4697-9C41-94F90E2DB780}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entity", "Entity\Entity.csproj", "{D77DB31F-53CE-40B1-B5EC-78F0037F0D00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{B5E51C00-0F9B-4AB3-8D98-CA316D63A419}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBD6E885-D507-4697-9C41-94F90E2DB780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD6E885-D507-4697-9C41-94F90E2DB780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD6E885-D507-4697-9C41-94F90E2DB780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD6E885-D507-4697-9C41-94F90E2DB780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D77DB31F-53CE-40B1-B5EC-78F0037F0D00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D77DB31F-53CE-40B1-B5EC-78F0037F0D00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D77DB31F-53CE-40B1-B5EC-78F0037F0D00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D77DB31F-53CE-40B1-B5EC-78F0037F0D00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5E51C00-0F9B-4AB3-8D98-CA316D63A419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5E51C00-0F9B-4AB3-8D98-CA316D63A419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5E51C00-0F9B-4AB3-8D98-CA316D63A419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5E51C00-0F9B-4AB3-8D98-CA316D63A419}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A44EF55D-BEB4-4319-985B-8EB0DE2428D7}
+	EndGlobalSection
+EndGlobal
