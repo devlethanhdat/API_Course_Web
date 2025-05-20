@@ -12,7 +12,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAppDispatch } from './redux/store/configureStore'
 import { fetchBasketAsync } from './redux/slice/basketSlice'
 import Dashboard from './pages/Dashboard'
-import PrivateRoute from './components/PrivateRout'
+import PrivateRoute from './components/PrivateRoute'
 import CheckoutPage from './pages/CheckoutPage'
 import { fetchCurrentUser } from './redux/slice/userSlice'
 import Loading from './components/Loading'
@@ -21,7 +21,11 @@ import InstructorPage from './pages/InstructorPage'
 import CreateCourse from './pages/CreateCourse'
 import { getCategoriesAsync } from './redux/slice/categorySlice'
 import SectionPage from './pages/SectionPage'
-import 'antd/dist/antd.css';
+import AdminPage from './pages/Admin'
+import 'antd/dist/antd.css'
+import CategoryList from './pages/Admin/Categories/CategoryList'
+import CourseList from './pages/Admin/Courses/CourseList'
+
 function App() {
   const dispatch = useAppDispatch()
   const [loading, setLoading] = useState(true)
@@ -70,6 +74,24 @@ function App() {
           exact
           path="/:course/lectures"
           component={SectionPage}
+        />
+        {/* Place specific admin routes before the general admin route */}
+        <PrivateRoute 
+          exact
+          path="/admin/categories" 
+          component={CategoryList}
+          roles={['Admin']} 
+        />
+        <PrivateRoute 
+          exact
+          path="/admin/courses" 
+          component={CourseList}
+          roles={['Admin']} 
+        />
+        <PrivateRoute 
+          path="/admin" 
+          component={AdminPage} 
+          roles={['Admin']} 
         />
       </Switch>
     </>

@@ -11,6 +11,10 @@ const UserMenu = () => {
 
   const { user } = useAppSelector((state) => state.user);
 
+  const isAdmin = (user?.roles ?? []).some(
+    (role: string) => typeof role === 'string' && role.toLowerCase() === 'admin'
+  );
+
   const signout = () => {
     dispatch(signOut());
     dispatch(removeBasket());
@@ -25,6 +29,11 @@ const UserMenu = () => {
       {user?.roles?.includes('Instructor') && (
         <Menu.Item>
           <Link to="/instructor">Instructor</Link>
+        </Menu.Item>
+      )}
+      {isAdmin && (
+        <Menu.Item>
+          <Link to="/admin">Admin</Link>
         </Menu.Item>
       )}
       <Menu.Item>

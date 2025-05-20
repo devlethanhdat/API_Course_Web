@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { PaginatedCourse } from '../models/paginatedCourse'
-import { Category } from '../models/category'
+import { Category, CategoryFormValues } from '../models/category'
 import { Course, RegisterCourse } from '../models/course'
 import { Basket } from '../models/basket'
 import { Login, Register, User } from '../models/user'
@@ -93,13 +93,20 @@ const Courses = {
     requests.get<PaginatedCourse>('/courses', params),
   getById: (id: string) => requests.get<Course>(`/courses/${id}`),
   create: (data: RegisterCourse) => requests.post < string > ('courses', data),
-    publish: (courseId: string) =>
+  update: (id: string, course: Partial<Course>) => 
+    requests.put<Course>(`/courses/${id}`, course),
+  publish: (courseId: string) =>
     requests.post < string > (`courses/publish/${courseId}`, {}),
+  delete: (id: string) => requests.del<void>(`/courses/${id}`),
 }
 
 const Categories = {
-  list: () => requests.get<Category[]>('/categories'),
-  getCategory: (id: number) => requests.get<Category>(`/categories/${id}`),
+  list: () => requests.get<Category[]>('category'),
+  details: (id: number) => requests.get<Category>(`category/${id}`),
+  create: (category: CategoryFormValues) => requests.post<Category>('category', category),
+  update: (id: number, category: CategoryFormValues) => 
+    requests.put<Category>(`category/${id}`, { name: category.name }),
+  delete: (id: number) => requests.del(`category/${id}`)
 }
 
 const Baskets = {

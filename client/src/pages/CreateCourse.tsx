@@ -14,12 +14,12 @@ const CreateCourse = () => {
     subTitle: "",
     description: "",
     price: 0,
-    categoryId: 0,
+    category: "",
     level: "",
     language: "",
   });
 
-  const { title, subTitle, description, price, categoryId, level, language } =
+  const { title, subTitle, description, price, category, level, language } =
     values;
 
   const categories = useAppSelector(categoriesSelector.selectAll);
@@ -28,11 +28,11 @@ const CreateCourse = () => {
   const history = useHistory();
 
   const getSelectCategories = () => {
-    const catArray: { value: number; label: string }[] = [];
+    const catArray: { value: string; label: string }[] = [];
 
     if (categories) {
       categories.forEach((category: Category) => {
-        catArray.push({ value: category.id, label: category.name });
+        catArray.push({ value: category.name, label: category.name });
       });
     }
     return catArray;
@@ -157,9 +157,9 @@ const CreateCourse = () => {
         >
           <Select
             options={getSelectCategories()}
-            value={categoryId}
+            value={category}
             placeholder="Select the Category"
-            onChange={(value) => setValues({ ...values, categoryId: value })}
+            onChange={(value) => setValues({ ...values, category: value })}
           />
         </Form.Item>
         <Form.Item

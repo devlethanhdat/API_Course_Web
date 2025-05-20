@@ -77,6 +77,30 @@ namespace API.Controllers
             return BadRequest(new ApiResponse(400, "Problem creating Course"));
         }
 
+        [Authorize(Roles = "Admin,Instructor")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Course>> UpdateCourse(Guid id, [FromBody] Course courseUpdate)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            
+            if (course == null) return NotFound(new ApiResponse(404));
+            
+            // Update properties
+            course.Title = courseUpdate.Title;
+            course.SubTitle = courseUpdate.SubTitle;
+            course.Description = courseUpdate.Description;
+            course.Price = courseUpdate.Price;
+            course.Category = courseUpdate.Category;
+            course.Level = courseUpdate.Level;
+            course.Language = courseUpdate.Language;
+
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if (result) return Ok(course);
+
+            return BadRequest(new ApiResponse(400, "Problem updating course"));
+        }
+
         [Authorize(Roles = "Instructor")]
          [HttpPost("publish/{courseId}")]
 
