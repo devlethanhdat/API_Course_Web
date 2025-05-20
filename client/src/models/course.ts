@@ -40,7 +40,7 @@ export interface RegisterCourse {
   subTitle: string;
   description: string;
   price: number;
-  category: string;
+  category?: number;
   level: string;
   language: string;
   image?: string;

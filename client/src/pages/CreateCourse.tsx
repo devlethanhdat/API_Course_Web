@@ -14,7 +14,7 @@ const CreateCourse = () => {
     subTitle: "",
     description: "",
     price: 0,
-    category: "",
+    category: 0,
     level: "",
     language: "",
   });
@@ -28,11 +28,10 @@ const CreateCourse = () => {
   const history = useHistory();
 
   const getSelectCategories = () => {
-    const catArray: { value: string; label: string }[] = [];
-
+    const catArray: { value: number; label: string }[] = [];
     if (categories) {
       categories.forEach((category: Category) => {
-        catArray.push({ value: category.name, label: category.name });
+        catArray.push({ value: category.id, label: category.name });
       });
     }
     return catArray;
@@ -59,7 +58,13 @@ const CreateCourse = () => {
   };
 
   const onSubmit = async () => {
-    const response = await agent.Courses.create(values);
+    const { category, ...rest } = values;
+    const payload = {
+      ...rest,
+      categoryId: Number(category),
+    };
+    console.log(payload);
+    const response = await agent.Courses.create(payload);
     notification.success({
       message: response,
     });
@@ -159,7 +164,7 @@ const CreateCourse = () => {
             options={getSelectCategories()}
             value={category}
             placeholder="Select the Category"
-            onChange={(value) => setValues({ ...values, category: value })}
+            onChange={(value) => setValues({ ...values, category: Number(value) })}
           />
         </Form.Item>
         <Form.Item
