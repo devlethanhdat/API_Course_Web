@@ -7,12 +7,15 @@ using Entity;
 // [Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
-public class CategoryController : ControllerBase
+public class CategoryController : BaseController
 {
     private readonly StoreContext _context;
-    public CategoryController(StoreContext context)
+    private readonly ILogger<CategoryController> _logger;
+
+    public CategoryController(StoreContext context, ILogger<CategoryController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -38,21 +41,40 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, Category category)
+    public async Task<ActionResult<CategoryDto>> UpdateCategory(int id, [FromBody] CategoryDto categoryDto)
     {
-        if (id != category.Id) return BadRequest();
-        _context.Entry(category).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
+        try
+        {
+            if (id != categoryDto.Id)
+            {
+                return BadRequest(new ApiResponse(400, "Id mismatch"));
+            }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCategory(int id)
-    {
-        var category = await _context.Categories.FindAsync(id);
-        if (category == null) return NotFound();
-        _context.Categories.Remove(category);
-        await _context.SaveChangesAsync();
-        return NoContent();
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound(new ApiResponse(404, "Category not found"));
+            }
+
+            // Check for duplicate name
+            var existingCategory = await _context.Categories
+                .FirstOrDefaultAsync(x => x.Name.ToLower() == categoryDto.Name.ToLower() 
+                    && x.Id != id);
+
+            if (existingCategory != null)
+            {
+                return BadRequest(new ApiResponse(400, "Category name already exists"));
+            }
+
+            category.Name = categoryDto.Name;
+            await _context.SaveChangesAsync();
+
+            return Ok(_mapper.Map<CategoryDto>(category));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating category");
+            return BadRequest(new ApiResponse(400, "Error updating category"));
+        }
     }
 }

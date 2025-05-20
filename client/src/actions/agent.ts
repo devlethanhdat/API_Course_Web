@@ -104,8 +104,10 @@ const Categories = {
   list: () => requests.get<Category[]>('category'),
   details: (id: number) => requests.get<Category>(`category/${id}`),
   create: (category: CategoryFormValues) => requests.post<Category>('category', category),
-  update: (id: number, category: CategoryFormValues) => 
-    requests.put<Category>(`category/${id}`, { name: category.name }),
+  update: (id: number, category: CategoryFormValues) => {
+    console.log('Sending update request:', { id, data: category });
+    return requests.put<Category>(`category/${id}`, category);
+  },
   delete: (id: number) => requests.del(`category/${id}`)
 }
 

@@ -51,16 +51,18 @@ const CategoryList = () => {
   const handleModalOk = async () => {
     try {
       const values = await form.validateFields();
-      const categoryData: CategoryFormValues = {
-        name: values.name.trim()
+      const categoryData = {
+        id: editingCategory?.id || 0,
+        name: values.name.trim(),
+        courses: []
       };
 
       if (editingCategory) {
-        console.log('Updating category:', editingCategory.id, categoryData);
+        console.log('Updating category:', categoryData);
         await agent.Categories.update(editingCategory.id, categoryData);
         message.success('Category updated successfully');
       } else {
-        await agent.Categories.create(categoryData);
+        await agent.Categories.create({ name: values.name.trim() });
         message.success('Category created successfully');
       }
       
@@ -69,8 +71,8 @@ const CategoryList = () => {
       setEditingCategory(null);
       loadCategories();
     } catch (error: any) {
-      console.error('Error saving category:', error);
-      message.error(error?.data?.error || 'Failed to save category');
+      console.error('Error details:', error.response?.data);
+      message.error(error.response?.data?.errorMessage || 'Failed to save category');
     }
   };
 
