@@ -61,6 +61,7 @@ namespace Infrastructure
             .HasData(
                 new IdentityRole { Name = "Student", NormalizedName = "STUDENT" },
                 new IdentityRole { Name = "Instructor", NormalizedName = "INSTRUCTOR" });
+                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
 
             builder.Entity<UserCourse>()
                 .HasKey(uc => new { uc.UserId, uc.CourseId });

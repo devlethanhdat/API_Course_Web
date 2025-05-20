@@ -18,7 +18,7 @@ services:
       dockerfile: API/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=appdb;Username=;Password="
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=appdb;Username=postgres;Password=01234600155"
     depends_on:
       - db
     ports:

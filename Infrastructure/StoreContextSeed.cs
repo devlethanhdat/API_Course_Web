@@ -35,7 +35,26 @@ namespace Infrastructure
 
                     await userManager.CreateAsync(instructor, "Password@123");
                     await userManager.AddToRolesAsync(instructor, new[] { "Student", "Instructor" });
+                    var instructorResult = await userManager.CreateAsync(instructor, "Password@123");
+                    if (instructorResult.Succeeded)
+                        await userManager.AddToRolesAsync(instructor, new[] { "Student", "Instructor" });
+                    else
+                        logger.LogError("Instructor: " + string.Join(", ", instructorResult.Errors.Select(e => e.Description)));
+
+                    var admin = new User
+                    {
+                        UserName = "admin",
+                        Email = "admin@test.com"
+                    };
+                    var adminResult = await userManager.CreateAsync(admin, "Password@123");
+                    if (adminResult.Succeeded)
+                        await userManager.AddToRoleAsync(admin, "Admin");
+                    else
+                        logger.LogError("Admin: " + string.Join(", ", adminResult.Errors.Select(e => e.Description)));
+
                 }
+
+                
                 if (!context.Categories.Any())
                 {
                     var categoryData =
