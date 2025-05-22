@@ -26,24 +26,22 @@ namespace Infrastructure.Services
 
             var total = basket.Items.Sum(item => item.Course.Price);
 
-            long updatedTotal = (long) (total * 100);
+            long updatedTotal = (long)(total * 100);
 
-            if(string.IsNullOrEmpty(basket.PaymentIntentId))
+            if (string.IsNullOrEmpty(basket.PaymentIntentId))
             {
                 var options = new PaymentIntentCreateOptions
                 {
                     Amount = updatedTotal,
                     Currency = "usd",
-                    PaymentMethodTypes = new List<string> {"card"}
+                    PaymentMethodTypes = new List<string> { "card" }
                 };
 
                 intent = await service.CreateAsync(options);
-                Console.WriteLine("Created PaymentIntent ID: " + intent.Id);
-                // Store the intent.Id in the basket or database
+
             }
             else
             {
-                Console.WriteLine("Updating PaymentIntent ID: " + basket.PaymentIntentId);
                 var options = new PaymentIntentUpdateOptions
                 {
                     Amount = updatedTotal
@@ -52,7 +50,7 @@ namespace Infrastructure.Services
                 await service.UpdateAsync(basket.PaymentIntentId, options);
             }
 
-                return intent;
+            return intent;
         }
     }
 }

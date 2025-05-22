@@ -5,6 +5,7 @@ import { Course, RegisterCourse } from '../models/course'
 import { Basket } from '../models/basket'
 import { Login, Register, User } from '../models/user'
 import { Lecture, LectureDto } from '../models/lecture'
+import { InstructorStatsDto } from '../models/stats' // Add this import
 import { notification } from 'antd'
 
 axios.defaults.baseURL = "http://localhost:5001/api";
@@ -102,8 +103,9 @@ const Courses = {
     return requests.put<Course>(`/courses/${id}`, course);
   },
   publish: (courseId: string) =>
-    requests.post < string > (`courses/publish/${courseId}`, {}),
-  delete: (id: string) => requests.del(`/courses/${id}`), // Sửa lại route cho đúng
+    requests.post<string>(`courses/publish/${courseId}`, {}),
+  delete: (id: string) => requests.del(`/courses/${id}`),
+  getInstructorStats: () => requests.get<InstructorStatsDto>('courses/stats'),
 }
 
 const Categories = {

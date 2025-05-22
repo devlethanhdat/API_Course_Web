@@ -4,6 +4,7 @@ using Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Infrastructure
 {
@@ -29,6 +30,11 @@ namespace Infrastructure
         public DbSet<Section> Sections { get; set; }
 
         public DbSet<Lecture> Lectures { get; set; }
+
+        public DbSet<Entity.Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+       
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -66,6 +72,7 @@ namespace Infrastructure
             builder.Entity<UserCourse>()
                 .HasKey(uc => new { uc.UserId, uc.CourseId });
 
+
             builder.Entity<UserCourse>()
                 .HasOne(uc => uc.User)
                 .WithMany(u => u.UserCourses)
@@ -75,8 +82,11 @@ namespace Infrastructure
                 .HasOne(uc => uc.Course)
                 .WithMany(c => c.UserCourses)
                 .HasForeignKey(uc => uc.CourseId);
-          
 
+            builder.Entity<OrderItem>()
+           .HasKey(oi => new { oi.OrderId, oi.CourseId });
+
+       
 
         }
     }

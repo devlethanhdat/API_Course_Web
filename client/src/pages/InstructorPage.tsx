@@ -13,6 +13,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'aos/dist/aos.css';
 import '../styles/InstructorPage.scss'; // Update import path
+import agent from '../actions/agent'; // Import agent for API calls
 
 const { Title, Text } = Typography;
 const { Meta } = Card;
@@ -42,6 +43,24 @@ const InstructorPage = () => {
   };
 
   useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const response = await agent.Courses.getInstructorStats();
+        setStats({
+          totalStudents: response.totalStudents,
+          totalRevenue: response.totalRevenue,
+          totalCourses: response.totalCourses
+        });
+      } catch (error) {
+        console.error('Error loading stats:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Could not load statistics'
+        });
+      }
+    };
+
+    loadStats();
     dispatch(getUnpublishedCourses());
   }, [dispatch]);
 
