@@ -77,6 +77,7 @@ const requests = {
     axios.post<T>(url, body).then(responseBody),
   put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
   del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
+  delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 }
 
 const Users = {
@@ -91,13 +92,18 @@ const Users = {
 const Courses = {
   list: (params?: URLSearchParams) =>
     requests.get<PaginatedCourse>('/courses', params),
-  getById: (id: string) => requests.get<Course>(`/courses/${id}`),
+  getById: (id: string) => {
+    console.log('Calling API for course:', id); // Debug log
+    return requests.get<Course>(`/courses/${id}`);
+  },
   create: (data: RegisterCourse) => requests.post < string > ('courses', data),
-  update: (id: string, course: Partial<Course>) => 
-    requests.put<Course>(`/courses/${id}`, course),
+  update: (id: string, course: Partial<Course>) => {
+    console.log('Sending update request:', { id, data: course }); // Debug log
+    return requests.put<Course>(`/courses/${id}`, course);
+  },
   publish: (courseId: string) =>
     requests.post < string > (`courses/publish/${courseId}`, {}),
-  delete: (id: string) => requests.del<void>(`/courses/${id}`),
+  delete: (id: string) => requests.del(`/courses/${id}`), // Sửa lại route cho đúng
 }
 
 const Categories = {

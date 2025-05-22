@@ -66,6 +66,11 @@ namespace API.Controllers
 
         public async Task<ActionResult<string>> CreateCourse([FromBody] Course course)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Return validation errors
+            }
+
             course.Instructor = User.Identity.Name;
 
             _context.Courses.Add(course);
@@ -93,6 +98,7 @@ namespace API.Controllers
             course.Category = courseUpdate.Category;
             course.Level = courseUpdate.Level;
             course.Language = courseUpdate.Language;
+            course.Image = courseUpdate.Image; // Thêm dòng này để cập nhật image
 
             var result = await _context.SaveChangesAsync() > 0;
 
@@ -120,6 +126,27 @@ namespace API.Controllers
             return BadRequest(new ApiResponse(400, "Problem publishing the Course"));
 
          }
+       [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourse(Guid id) // Đổi kiểu dữ liệu thành Guid
+        {
+            try 
+            {
+                var course = await _context.Courses.FindAsync(id);
+                
+                if (course == null)
+                {
+                    return NotFound(new { message = "Course not found" });
+                }
 
+                _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+                
+                return Ok(new { message = "Course deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

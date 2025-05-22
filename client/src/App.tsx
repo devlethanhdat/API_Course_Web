@@ -25,6 +25,7 @@ import AdminPage from './pages/Admin'
 import 'antd/dist/antd.css'
 import CategoryList from './pages/Admin/Categories/CategoryList'
 import CourseList from './pages/Admin/Courses/CourseList'
+import EditCourse from './pages/EditCourse'
 
 function App() {
   const dispatch = useAppDispatch()
@@ -69,6 +70,12 @@ function App() {
           exact
           path="/instructor/course"
           component={CreateCourse}
+        />
+        <PrivateRoute
+          exact
+          path="/instructor/course/:id/edit"
+          component={EditCourse}
+          roles={['Instructor']}
         />
         <PrivateRoute
           exact
