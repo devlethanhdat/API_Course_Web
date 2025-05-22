@@ -11,6 +11,7 @@ namespace Entity
         public decimal Total { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
-
+        public string PaymentIntentId { get; set; }
+        public StripePayment StripePayment { get; set; }
     }
 }
