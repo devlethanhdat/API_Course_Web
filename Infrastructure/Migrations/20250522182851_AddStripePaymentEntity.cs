@@ -55,6 +55,15 @@ namespace Infrastructure.Migrations
                     table.PrimaryKey("PK_StripePayments", x => x.PaymentIntentId);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "3e3e5941-c821-4fdd-b907-6ef906e59cb0", null, "Student", "STUDENT" },
+                    { "efa7d9be-2de7-47ff-adce-fb89444f2325", null, "Instructor", "INSTRUCTOR" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_PaymentIntentId",
                 table: "Orders",
@@ -114,6 +123,16 @@ namespace Infrastructure.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_OrderItems_OrderId1",
                 table: "OrderItems");
+
+            migrationBuilder.DeleteData(
+                table: "Roles",
+                keyColumn: "Id",
+                keyValue: "3e3e5941-c821-4fdd-b907-6ef906e59cb0");
+
+            migrationBuilder.DeleteData(
+                table: "Roles",
+                keyColumn: "Id",
+                keyValue: "efa7d9be-2de7-47ff-adce-fb89444f2325");
 
             migrationBuilder.DropColumn(
                 name: "PaymentIntentId",

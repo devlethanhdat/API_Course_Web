@@ -6,9 +6,10 @@ import { useAppSelector } from '../redux/store/configureStore'
 interface Props {
   stripe: Stripe | null
   handleSubmit: (event: SyntheticEvent) => Promise<void>
+  isLoading?: boolean
 }
 
-const CheckoutSummary = ({ stripe, handleSubmit }: Props) => {
+const CheckoutSummary = ({ stripe, handleSubmit, isLoading }: Props) => {
   const { basket } = useAppSelector((state) => state.basket)
   const total = basket?.items.reduce((sum, item) => sum + item.price, 0)
 
@@ -26,10 +27,11 @@ const CheckoutSummary = ({ stripe, handleSubmit }: Props) => {
           type="primary"
           className="checkout__summary__button"
           size="large"
-          disabled={!stripe}
+          disabled={!stripe || isLoading}
+          loading={isLoading}
           onClick={handleSubmit}
         >
-          Make Payment
+          {isLoading ? 'Processing...' : 'Pay Now'}
         </Button>
       </Card>
     </>

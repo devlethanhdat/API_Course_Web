@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '../redux/store/configureStore'
 
 const CheckoutPage = () => {
   const [cardName, setCardName] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false) // Add loading state
 
   const [form] = Form.useForm()
 
@@ -32,42 +33,54 @@ const CheckoutPage = () => {
 
   const handlePayment = async (event: SyntheticEvent) => {
     event.preventDefault()
-    if (!stripe || !elements) return
+    setIsLoading(true)
 
     try {
-      const cardElement = elements.getElement(CardNumberElement)
+      if (!stripe || !elements || !basket?.clientSecret) {
+        throw new Error('Payment cannot be initialized')
+      }
 
-      const paymentResult = await stripe.confirmCardPayment(
-        basket?.clientSecret!,
+      const cardElement = elements.getElement(CardNumberElement)
+      if (!cardElement) {
+        throw new Error('Card element not found')
+      }
+
+      console.log('Processing payment with secret:', basket.clientSecret)
+
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        basket.clientSecret,
         {
           payment_method: {
-            card: cardElement!,
+            card: cardElement,
             billing_details: {
-              name: cardName,
+              name: cardName || 'Anonymous',
             },
           },
-        },
+        }
       )
-      if (paymentResult.paymentIntent?.status === 'succeeded') {
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      if (paymentIntent?.status === 'succeeded') {
         await agent.Users.addCourse()
         notification.success({
-          message: 'Your payment is successful',
+          message: 'Payment Successful',
+          description: 'Your payment has been processed successfully',
         })
         dispatch(removeBasket())
         await agent.Baskets.clear()
-        setTimeout(() => {
-          history.push('/profile')
-        }, 1000)
-      } else {
-        notification.error({
-          message: paymentResult.error?.message!,
-        })
-        setTimeout(() => {
-          history.push('/profile')
-        }, 500)
+        history.push('/profile')
       }
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      console.error('Payment error:', error)
+      notification.error({
+        message: 'Payment Failed',
+        description: error?.message || 'An error occurred during payment',
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 

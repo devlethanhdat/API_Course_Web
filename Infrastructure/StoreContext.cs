@@ -37,7 +37,14 @@ namespace Infrastructure
             builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
-
+            builder
+               .ApplyConfigurationsFromAssembly(Assembly
+                   .GetExecutingAssembly());
+            builder.Entity<IdentityRole>()
+            .HasData(
+                new IdentityRole { Name = "Student", NormalizedName = "STUDENT" },
+                new IdentityRole { Name = "Instructor", NormalizedName = "INSTRUCTOR" });
+            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
             // Apply configurations from assembly
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20250522165138_AddStripePaymentEntity")]
+    [Migration("20250522182851_AddStripePaymentEntity")]
     partial class AddStripePaymentEntity
     {
         /// <inheritdoc />
@@ -415,6 +415,20 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "3e3e5941-c821-4fdd-b907-6ef906e59cb0",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        },
+                        new
+                        {
+                            Id = "efa7d9be-2de7-47ff-adce-fb89444f2325",
+                            Name = "Instructor",
+                            NormalizedName = "INSTRUCTOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
