@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
-using Stripe.Events; // Add this
 
 namespace API.Controllers
 {
@@ -54,38 +53,23 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("webhook")]
-        public async Task<IActionResult> StripeWebhook()
+        [Authorize]
+        [HttpPost("confirm")]
+        public async Task<ActionResult<Entity.Order>> ConfirmPayment([FromBody] string paymentIntentId)
         {
-            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             try
             {
-                var stripeEvent = EventUtility.ConstructEvent(
-                    json,
-                    Request.Headers["Stripe-Signature"],
-                    _config["Stripe:WebhookSecret"]
-                );
+                var userId = User.Identity.Name;
+                var order = await _paymentService.SaveOrderAsync(paymentIntentId, userId);
 
-                var intent = (PaymentIntent)stripeEvent.Data.Object;
+                if (order == null)
+                    return BadRequest(new ApiResponse(400, "Problem saving order"));
 
-                // Change this line - use string comparison instead
-                if (stripeEvent.Type == "payment_intent.succeeded")
-                {
-                    var order = await _context.Orders
-                        .FirstOrDefaultAsync(o => o.PaymentIntentId == intent.Id);
-                    
-                    if (order != null)
-                    {
-                        order.Status = "Completed";
-                        await _context.SaveChangesAsync();
-                    }
-                }
-
-                return Ok();
+                return order;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(new { error = e.Message });
+                return BadRequest(new ApiResponse(400, ex.Message));
             }
         }
 
