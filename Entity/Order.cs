@@ -7,11 +7,13 @@ namespace Entity
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string UserId { get; set; }
-        public string Status { get; set; }
-        public long Total { get; set; }  // Changed to long to match with Stripe
-        public DateTime CreatedAt { get; set; }
+        public string Status { get; set; } // "Pending", "Completed", "Failed"
+        public decimal Total { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string PaymentIntentId { get; set; }
-        public StripePayment StripePayment { get; set; }
+        
+        // Navigation properties
+        public virtual StripePayment StripePayment { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

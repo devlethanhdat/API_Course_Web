@@ -7,7 +7,7 @@ import { Login, Register, User } from '../models/user'
 import { Lecture, LectureDto } from '../models/lecture'
 import { InstructorStatsDto } from '../models/stats' // Add this import
 import { notification } from 'antd'
-
+import { Order } from '../models/order'
 axios.defaults.baseURL = "http://localhost:5001/api";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data
@@ -129,6 +129,8 @@ const Baskets = {
 
 const Payments = {
   paymentIntent: () => requests.post<Basket>('payments', {}),
+  confirmPayment: (paymentIntentId: string) =>
+    requests.post<Order>('payments/confirm', { paymentIntentId }),
 }
 
 const Lectures = {

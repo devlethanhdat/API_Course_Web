@@ -157,14 +157,20 @@ namespace API.Controllers
         {
             try
             {
-                var instructor = User.Identity.Name;
+                var userId = User.Identity.Name;
                 
                 // Lấy tất cả khóa học của instructor
                 var instructorCourses = await _context.Courses
-                    .Where(c => c.Instructor == instructor)
+                    .Where(c => c.Instructor == userId)
                     .ToListAsync();
 
                 var courseIds = instructorCourses.Select(c => c.Id).ToList();
+
+                var totalRevenue = await _context.Orders
+                    .Where(o => o.Status == "Completed")
+                    .SelectMany(o => o.OrderItems)
+                    .Where(oi => courseIds.Contains(oi.CourseId))
+                    .SumAsync(oi => oi.Price);
 
                 var stats = new InstructorStatsDto
                 {
@@ -178,11 +184,7 @@ namespace API.Controllers
                         .CountAsync(),
                     
                     // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
-                    TotalRevenue = await _context.Orders
-                        .Where(o => o.Status == "Completed")
-                        .SelectMany(o => o.OrderItems)
-                        .Where(oi => courseIds.Contains(oi.CourseId))
-                        .SumAsync(oi => oi.Price)
+                    TotalRevenue = totalRevenue
                 };
 
                 return Ok(stats);

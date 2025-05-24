@@ -64,20 +64,29 @@ const CheckoutPage = () => {
       }
 
       if (paymentIntent?.status === 'succeeded') {
-        await agent.Users.addCourse()
-        notification.success({
-          message: 'Payment Successful',
-          description: 'Your payment has been processed successfully',
-        })
-        dispatch(removeBasket())
-        await agent.Baskets.clear()
-        history.push('/profile')
+        try {
+          await agent.Payments.confirmPayment(paymentIntent.id)
+          dispatch(removeBasket())
+          // await agent.Users.addCourse()
+          // await agent.Baskets.clear()
+          notification.success({
+            message: 'Payment Successful',
+            description: 'Your payment has been processed successfully',
+          })
+          history.push('/profile')
+        } catch (err) {
+          notification.error({
+            message: 'Order Save Failed',
+            description: (err as Error)?.message || 'Could not save your order. Please contact support.',
+          })
+          return;
+        }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Payment error:', error)
       notification.error({
         message: 'Payment Failed',
-        description: error?.message || 'An error occurred during payment',
+        description: error instanceof Error ? error.message : 'An error occurred during payment',
       })
     } finally {
       setIsLoading(false)

@@ -36,6 +36,19 @@ namespace Infrastructure.Services
 
         public async Task<Entity.Order> SaveOrderAsync(string paymentIntentId, string userId)
         {
+            // Thêm đoạn này vào đầu hàm
+            var userNameOrEmail = userId;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userNameOrEmail || u.UserName == userNameOrEmail);
+            if (user == null) throw new Exception("User not found");
+            var realUserId = user.Id;
+
+            // Xác thực trạng thái payment với Stripe
+            var service = new PaymentIntentService();
+            var paymentIntent = await service.GetAsync(paymentIntentId);
+
+            if (paymentIntent.Status != "succeeded")
+                throw new Exception("Payment not successful!");
+
             var basket = await _context.Basket
                 .Include(b => b.Items)
                 .ThenInclude(i => i.Course)
@@ -50,7 +63,8 @@ namespace Infrastructure.Services
                 UserId = userId,
                 Amount = (long)basket.Items.Sum(i => i.Course.Price),
                 Status = "Completed",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                ClientSecret = paymentIntent.ClientSecret
             };
 
             // Create order
@@ -74,6 +88,23 @@ namespace Infrastructure.Services
                 _context.StripePayments.Add(payment);
                 _context.Orders.Add(order);
                 _context.Basket.Remove(basket);
+
+                // Sau khi tạo order thành công
+                foreach (var item in basket.Items)
+                {
+                    // Kiểm tra nếu user chưa có khóa học này thì mới thêm
+                    var exists = await _context.UserCourses.AnyAsync(uc => uc.UserId == realUserId && uc.CourseId == item.Course.Id);
+                    if (!exists)
+                    {
+                        _context.UserCourses.Add(new UserCourse
+                        {
+                            UserId = realUserId,
+                            CourseId = item.Course.Id,
+                            // PurchasedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+
                 await _context.SaveChangesAsync();
                 return order;
             }

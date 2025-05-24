@@ -13,6 +13,8 @@ using Stripe;
 
 namespace API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class PaymentsController : BaseController
     {
         private readonly PaymentService _paymentService;
@@ -55,17 +57,28 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("confirm")]
-        public async Task<ActionResult<Entity.Order>> ConfirmPayment([FromBody] string paymentIntentId)
+        public async Task<ActionResult<OrderDto>> ConfirmPayment([FromBody] PaymentConfirmDto dto)
         {
             try
             {
                 var userId = User.Identity.Name;
-                var order = await _paymentService.SaveOrderAsync(paymentIntentId, userId);
+                var order = await _paymentService.SaveOrderAsync(dto.PaymentIntentId, userId);
 
                 if (order == null)
                     return BadRequest(new ApiResponse(400, "Problem saving order"));
 
-                return order;
+                // Map sang DTO
+                var orderDto = new OrderDto
+                {
+                    Id = order.Id,
+                    UserId = order.UserId,
+                    PaymentIntentId = order.PaymentIntentId,
+                    Status = order.Status,
+                    Total = (long)order.Total,
+                    CreatedAt = order.CreatedAt
+                };
+
+                return orderDto;
             }
             catch (Exception ex)
             {

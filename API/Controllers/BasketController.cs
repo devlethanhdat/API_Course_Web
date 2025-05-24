@@ -9,9 +9,12 @@ using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class BasketController : BaseController
     {
         private readonly StoreContext _context;
@@ -74,21 +77,16 @@ namespace API.Controllers
             return BadRequest(new ApiResponse(400, "Problem removing item from the basket"));
         }
 
+        [Authorize]
         [HttpDelete("clear")]
-          public async Task<ActionResult> RemoveBasket()
+        public async Task<IActionResult> ClearBasket()
         {
-            var basket = await ExtractBasket(GetClientId());
-
+            var userId = User.Identity.Name;
+            var basket = await _context.Basket.FirstOrDefaultAsync(b => b.ClientId == userId);
             if (basket == null) return NotFound();
-
-            basket.ClearBasket();
-
-            var result = await _context.SaveChangesAsync() > 0;
-
-            if (result) return Ok();
-
-              return BadRequest(new ApiResponse(400, "Problem clearing the basket"));
-
+            _context.Basket.Remove(basket);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
         private Basket CreateBasket()
