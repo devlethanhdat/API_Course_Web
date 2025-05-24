@@ -33,8 +33,6 @@ namespace Infrastructure
                         Email = "instructor@test.com"
                     };
 
-                    await userManager.CreateAsync(instructor, "Password@123");
-                    await userManager.AddToRolesAsync(instructor, new[] { "Student", "Instructor" });
                     var instructorResult = await userManager.CreateAsync(instructor, "Password@123");
                     if (instructorResult.Succeeded)
                         await userManager.AddToRolesAsync(instructor, new[] { "Student", "Instructor" });

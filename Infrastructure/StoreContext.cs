@@ -44,7 +44,7 @@ namespace Infrastructure
             .HasData(
                 new IdentityRole { Name = "Student", NormalizedName = "STUDENT" },
                 new IdentityRole { Name = "Instructor", NormalizedName = "INSTRUCTOR" });
-            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
+                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
             // Apply configurations from assembly
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
