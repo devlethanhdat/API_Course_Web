@@ -12,6 +12,6 @@ namespace Entity
         public Guid CourseId { get; set; }
         public Course Course { get; set; }
 
-        // public DateTime PurchasedAt { get; set; }
+        public DateTime PurchasedAt { get; set; }
     }
 }

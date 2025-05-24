@@ -15,6 +15,7 @@ export interface Course {
   students: number;
   learnings: Learning[];
   requirements: Requirement[];
+  lectures?: Lecture[];
 }
 
 export interface CourseParams {
@@ -44,4 +45,12 @@ export interface RegisterCourse {
   level: string;
   language: string;
   image?: string;
+}
+
+export interface Lecture {
+  id: string;
+  title: string;
+  videoUrl?: string;
+  content?: string;
+  // ... các trường khác nếu có
 }

@@ -1,7 +1,7 @@
 import { Button, Card, Typography, Empty, Space, Statistic, Row, Col, Tooltip, Tag, Modal, notification } from 'antd';
 import { PlusOutlined, BookOutlined, UsergroupAddOutlined, DollarOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Area } from '@ant-design/charts';
+import { Area, Bar, Pie, Column } from '@ant-design/charts';
 import CountUp from 'react-countup';
 import { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
@@ -14,6 +14,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import 'aos/dist/aos.css';
 import '../styles/InstructorPage.scss'; // Update import path
 import agent from '../actions/agent'; // Import agent for API calls
+import { CourseStudentCountDto, CourseRevenueDto, OrderTrendDto } from '../models/stats';
 
 const { Title, Text } = Typography;
 const { Meta } = Card;
@@ -42,6 +43,23 @@ const InstructorPage = () => {
     }
   };
 
+  const [studentCounts, setStudentCounts] = useState<CourseStudentCountDto[]>([]);
+  const [revenues, setRevenues] = useState<CourseRevenueDto[]>([]);
+  const [orderTrends, setOrderTrends] = useState<OrderTrendDto[]>([]);
+
+  useEffect(() => {
+    agent.Instructor.getOrderTrends()
+      .then(data => setOrderTrends(Array.isArray(data) ? data : []))
+      .catch(() => setOrderTrends([]));
+  }, []);
+
+  const orderTrendData = Array.isArray(orderTrends)
+    ? orderTrends.map(item => ({
+        date: `${item.month}/${item.year}`,
+        orders: item.orderCount,
+      }))
+    : [];
+
   useEffect(() => {
     const loadStats = async () => {
       try {
@@ -62,6 +80,9 @@ const InstructorPage = () => {
 
     loadStats();
     dispatch(getUnpublishedCourses());
+    agent.Instructor.getStudentCountByCourse().then(setStudentCounts);
+    agent.Instructor.getRevenueByCourse().then(setRevenues);
+    agent.Instructor.getOrderTrends().then(setOrderTrends);
   }, [dispatch]);
 
   const { unpublishedCourses } = useAppSelector((state) => state.user);
@@ -170,6 +191,8 @@ const InstructorPage = () => {
     );
   };
 
+  console.log('revenues:', revenues);
+
   return (
     <motion.div 
       className="instructor-dashboard"
@@ -229,6 +252,36 @@ const InstructorPage = () => {
       <Card className="chart-section">
         <Title level={4}>Student Enrollment Trends</Title>
         <Area {...chartConfig} />
+      </Card>
+
+      <Card className="chart-section">
+        <Title level={4}>Student Count by Course</Title>
+        <Bar
+          data={studentCounts}
+          xField="studentCount"
+          yField="courseTitle"
+          seriesField="courseTitle"
+          legend={false}
+        />
+      </Card>
+
+      <Card className="chart-section">
+        <Title level={4}>Revenue by Course</Title>
+        <Pie
+          data={revenues}
+          angleField="revenue"
+          colorField="courseTitle"
+          label={false}
+        />
+      </Card>
+
+      <Card className="chart-section">
+        <Title level={4}>Order Trends</Title>
+        <Column
+          data={orderTrendData}
+          xField="date"
+          yField="orders"
+        />
       </Card>
 
       <section className="courses-section">

@@ -78,12 +78,8 @@ export const courseSlice = createSlice({
   }),
   reducers: {
     setCourseParams: (state, action) => {
+      state.courseParams = { ...state.courseParams, ...action.payload, pageIndex: 1 }
       state.coursesLoaded = false
-      state.courseParams = {
-        ...state.courseParams,
-        ...action.payload,
-        pageIndex: 1,
-      }
     },
     setPageNumber: (state, action) => {
       state.coursesLoaded = false

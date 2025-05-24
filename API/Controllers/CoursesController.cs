@@ -194,5 +194,33 @@ namespace API.Controllers
                 return StatusCode(500, new ApiResponse(500, ex.Message));
             }
         }
+
+        [HttpGet("enrollment-trends")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<ActionResult<IEnumerable<EnrollmentTrendDto>>> GetEnrollmentTrends()
+        {
+            var userId = User.Identity.Name;
+            var instructor = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userId || u.Email == userId);
+            if (instructor == null) return Unauthorized();
+
+            var courseIds = await _context.Courses
+                .Where(c => c.Instructor == userId)
+                .Select(c => c.Id)
+                .ToListAsync();
+
+            var trends = await _context.UserCourses
+                .Where(uc => courseIds.Contains(uc.CourseId))
+                .GroupBy(uc => new { uc.PurchasedAt.Year, uc.PurchasedAt.Month })
+                .Select(g => new EnrollmentTrendDto
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Count = g.LongCount()
+                })
+                .OrderBy(g => g.Year).ThenBy(g => g.Month)
+                .ToListAsync();
+
+            return Ok(trends);
+        }
     }
 }

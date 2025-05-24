@@ -1,0 +1,102 @@
+/* Đảm bảo mỗi slide con có đủ không gian */
+.slide-item {
+    width: 100% !important;
+    max-width: 400px;
+    min-width: 300px;
+    padding: 0 10px;          /* Khoảng cách giữa các slide */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    height: 100%;
+  }
+  
+  /* Nếu bạn muốn đảm bảo item luôn chiếm full vùng slide */
+  .slick-slide {
+    display: flex !important;
+    justify-content: center;
+    align-items: stretch;
+    height: 100%;
+  }
+  
+  /* ShowCourses nên co giãn linh hoạt */
+  .show-course {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background: #fff;        /* test màu để kiểm tra không bị bóp */
+  }
+  
+  
+.course {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+  padding: 2rem 0;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #1a237e;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+      animation: fadeInDown 1s;
+    }
+    h2 {
+      color: #64748b;
+      font-size: 1.3rem;
+      font-weight: 400;
+      animation: fadeInUp 1.2s;
+    }
+  }
+
+  .ant-card {
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+    &:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border-color: #1890ff;
+    }
+  }
+
+  .ant-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0 1rem 0;
+  }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+@media (max-width: 900px) {
+  .course__header h1 { font-size: 2rem; }
+  .course__header h2 { font-size: 1rem; }
+}
+
+.slick-list {
+  padding: 20px 0 !important;
+}
+.course__header h1 .typewriter {
+    color: #ff9800;
+    font-weight: bold;
+    font-size: 2.2rem;
+  }

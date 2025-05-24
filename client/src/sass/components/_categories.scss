@@ -26,3 +26,10 @@
     }
   }
 }
+
+.category-banner-slider {
+  margin-bottom: 32px;
+  .slick-dots li button:before {
+    color: #1890ff;
+  }
+}

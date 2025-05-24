@@ -41,7 +41,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Basket");
+                    b.ToTable("Basket", (string)null);
                 });
 
             modelBuilder.Entity("Entity.BasketItem", b =>
@@ -64,7 +64,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("BasketItem");
+                    b.ToTable("BasketItem", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Category", b =>
@@ -80,7 +80,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Course", b =>
@@ -140,7 +140,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Learning", b =>
@@ -161,7 +161,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Learnings");
+                    b.ToTable("Learnings", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Lecture", b =>
@@ -185,7 +185,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Lectures");
+                    b.ToTable("Lectures", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Order", b =>
@@ -213,7 +213,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("PaymentIntentId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Entity.OrderItem", b =>
@@ -236,7 +236,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("OrderId1");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Requirement", b =>
@@ -257,7 +257,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Requirements");
+                    b.ToTable("Requirements", (string)null);
                 });
 
             modelBuilder.Entity("Entity.Section", b =>
@@ -278,7 +278,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Sections");
+                    b.ToTable("Sections", (string)null);
                 });
 
             modelBuilder.Entity("Entity.StripePayment", b =>
@@ -306,7 +306,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("PaymentIntentId");
 
-                    b.ToTable("StripePayments");
+                    b.ToTable("StripePayments", (string)null);
                 });
 
             modelBuilder.Entity("Entity.User", b =>
@@ -381,14 +381,17 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("CurrentLecture")
-                        .HasColumnType("integer");
+                    b.Property<long>("CurrentLecture")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("PurchasedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "CourseId");
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("UserCourses");
+                    b.ToTable("UserCourses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -419,13 +422,13 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0073fcbd-32c9-4d4f-bf31-bfa62d633722",
+                            Id = "891e0173-8196-44c3-aebe-ef4ec9e7f862",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "49c97129-237f-4b24-a695-7357fe821cda",
+                            Id = "2c88acb1-1dd2-45b7-b07f-1a2cf73ee658",
                             Name = "Instructor",
                             NormalizedName = "INSTRUCTOR"
                         });

@@ -369,4 +369,32 @@
       }
     }
   }
+
+  &__preview {
+    margin: 2rem 0;
+    padding: 1.5rem 3.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(30,60,114,0.06);
+    h3 {
+      font-size: 1.4rem;
+      color: $color-secondary-dark;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+    &__item {
+      margin-bottom: 1.5rem;
+      .description-page__preview__title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: $color-primary;
+      }
+      .description-page__preview__content {
+        background: #fff;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 1px 4px rgba(30,60,114,0.04);
+      }
+    }
+  }
 }

@@ -5,10 +5,18 @@ import agent from '../actions/agent'
 import { Category } from '../models/category'
 import { Course } from '../models/course'
 import ShowCourses from '../components/ShowCourses'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+import banner1 from '../assets/logo.png';
+import banner2 from '../assets/logo.png';
+import banner3 from '../assets/logo.png';
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>()
   const [data, setData] = useState<Category & { courses: Course[] } | null>(null)
+
+  const bannerImages = [banner1, banner2, banner3];
 
   useEffect(() => {
     agent.Categories.details(parseInt(id))
@@ -21,8 +29,10 @@ const CategoryPage = () => {
   return (
     <div className="course-container">
       <div className="course-category__header">
+      
         <h1>{data?.name}</h1>
       </div>
+     
       <Row gutter={[24, 32]}>
         {data?.courses?.length ? (
           data.courses.map((course: Course) => (

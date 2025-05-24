@@ -26,6 +26,15 @@ import 'antd/dist/antd.css'
 import CategoryList from './pages/Admin/Categories/CategoryList'
 import CourseList from './pages/Admin/Courses/CourseList'
 import EditCourse from './pages/EditCourse'
+import Slider from "react-slick";
+import banner1 from './assets/Knowledge_Is_Human_Homepage_Animated_Banner.gif';
+import banner2 from './assets/475eb095746151.5e9ecde695f7a.gif';
+import banner3 from './assets/34220e95746151.5e9ecde696cb0.gif';
+import banner4 from './assets/fe441235d728b50c6003b3e59cd807cb.gif';
+
+const bannerImages = [banner4,banner4,banner4,banner4];
+const bannerImages1 = [banner1];
+
 
 function App() {
   const dispatch = useAppDispatch()
@@ -49,8 +58,22 @@ function App() {
 
   return (
     <>
+  
+      <img
+      src={bannerImages1[0]}
+      alt="banner"
+      style={{
+        width: '100%',
+        height: '50px',
+        objectFit: '-moz-initial',
+        display: 'block',
+      }}
+    />
+
       <Navigation />
+      
       <Route exact path="/" component={Categories} />
+     
       <Switch>
         <Route exact path="/" component={Homepage} />
         <Route exact path="/course/:id" component={DescriptionPage} />

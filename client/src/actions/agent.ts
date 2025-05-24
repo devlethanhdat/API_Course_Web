@@ -8,6 +8,7 @@ import { Lecture, LectureDto } from '../models/lecture'
 import { InstructorStatsDto } from '../models/stats' // Add this import
 import { notification } from 'antd'
 import { Order } from '../models/order'
+import { CourseStudentCountDto, CourseRevenueDto, OrderTrendDto } from '../models/stats'
 axios.defaults.baseURL = "http://localhost:5001/api";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data
@@ -145,6 +146,12 @@ const Lectures = {
   }) => requests.post <string>('lectures', data),
 }
 
+const Instructor = {
+  getStudentCountByCourse: () => requests.get<CourseStudentCountDto[]>('chart/student-count-by-course'),
+  getRevenueByCourse: () => requests.get<CourseRevenueDto[]>('chart/revenue-by-course'),
+  getOrderTrends: () => requests.get<OrderTrendDto[]>('chart/order-trends'),
+}
+
 const agent = {
   Courses,
   Categories,
@@ -152,6 +159,7 @@ const agent = {
   Users,
   Payments,
   Lectures,
+  Instructor,
 }
 
 export default agent

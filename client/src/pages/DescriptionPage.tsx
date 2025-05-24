@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
-import { Learning, Requirement } from '../models/course'
+import { Learning, Requirement, Lecture } from '../models/course'
 import { useParams } from 'react-router'
 import { Link, useHistory } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../redux/store/configureStore'
 import { addBasketItemAsync } from '../redux/slice/basketSlice'
 import { coursesSelector, getCourseAsync } from '../redux/slice/courseSlice'
+import ReactPlayer from 'react-player'
 
 const DescriptionPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -46,6 +47,9 @@ const DescriptionPage = () => {
    
     history.push('/checkout')
   }
+
+  console.log('course:', course);
+  console.log('lectures:', course?.lectures);
 
   return (
     <div className="description-page">
@@ -104,13 +108,35 @@ const DescriptionPage = () => {
             {course?.subTitle}
           </div>
         </div>
+        <div className="description-page__preview">
+          <h3>
+            <span role="img" aria-label="preview">🎬</span> Preview Lectures
+          </h3>
+          {course?.lectures && course.lectures.length > 0 ? (
+            course.lectures.slice(0, 2).map((lecture: Lecture, idx: number) => (
+              <div key={lecture.id || idx} className="description-page__preview__item">
+                <div className="description-page__preview__title">{lecture.title}</div>
+                {lecture.videoUrl ? (
+                  <ReactPlayer url={lecture.videoUrl} controls width="100%" style={{ borderRadius: 8, marginBottom: 12 }} />
+                ) : (
+                  <div className="description-page__preview__content">
+                    {lecture.content}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div style={{ color: '#888', fontStyle: 'italic' }}>No preview lectures available.</div>
+          )}
+        </div>
         <div className="description-page__description">
           <div className="description-page__description__title">
             Description
           </div>
-          <div className="description-page__description__content">
-            {course?.description}
-          </div>
+          <div
+            className="description-page__description__content"
+            dangerouslySetInnerHTML={{ __html: course?.description || '' }}
+          />
         </div>
       </div>
       <div className="description-page__sidebar">
