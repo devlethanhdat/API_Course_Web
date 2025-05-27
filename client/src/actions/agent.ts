@@ -150,6 +150,20 @@ const Instructor = {
   getStudentCountByCourse: () => requests.get<CourseStudentCountDto[]>('chart/student-count-by-course'),
   getRevenueByCourse: () => requests.get<CourseRevenueDto[]>('chart/revenue-by-course'),
   getOrderTrends: () => requests.get<OrderTrendDto[]>('chart/order-trends'),
+  getOrders: () => requests.get<any[]>('courses/instructor/orders'),
+  getRevenueStats: () => requests.get<any>('courses/instructor/revenue-stats'),
+}
+
+const Admin = {
+  getUsers: () => requests.get<any[]>('users/admin/users'),
+  createUser: (data: any) => requests.post('users/admin/users', data),
+  updateUser: (id: string, data: any) => requests.put(`users/admin/users/${id}`, data),
+  deleteUser: (id: string) => requests.del(`users/admin/users/${id}`),
+  getOrders: () => {
+    console.log('Calling API:', axios.defaults.baseURL + '/courses/admin/orders');
+    return requests.get<any[]>('courses/admin/orders');
+  },
+  getOrdersAndRevenue: () => requests.get<{ orders: any[]; stats: any }>('courses/admin/orders-and-revenue'),
 }
 
 const agent = {
@@ -160,6 +174,7 @@ const agent = {
   Payments,
   Lectures,
   Instructor,
+  Admin,
 }
 
 export default agent

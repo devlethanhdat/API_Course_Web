@@ -22,6 +22,7 @@ import CreateCourse from './pages/CreateCourse'
 import { getCategoriesAsync } from './redux/slice/categorySlice'
 import SectionPage from './pages/SectionPage'
 import AdminPage from './pages/Admin'
+import UserAdmin from './pages/Admin/Users/Users'
 import 'antd/dist/antd.css'
 import CategoryList from './pages/Admin/Categories/CategoryList'
 import CourseList from './pages/Admin/Courses/CourseList'
@@ -31,6 +32,7 @@ import banner1 from './assets/Knowledge_Is_Human_Homepage_Animated_Banner.gif';
 import banner2 from './assets/475eb095746151.5e9ecde695f7a.gif';
 import banner3 from './assets/34220e95746151.5e9ecde696cb0.gif';
 import banner4 from './assets/fe441235d728b50c6003b3e59cd807cb.gif';
+import OrdersPage from './pages/Admin/Orders/Orders';
 
 const bannerImages = [banner4,banner4,banner4,banner4];
 const bannerImages1 = [banner1];
@@ -118,11 +120,14 @@ function App() {
           component={CourseList}
           roles={['Admin']} 
         />
-        <PrivateRoute 
-          path="/admin" 
-          component={AdminPage} 
-          roles={['Admin']} 
+        <PrivateRoute
+          exact
+          path="/admin/orders"
+          component={OrdersPage}
+          roles={['Admin']}
         />
+        <Route path="/admin" exact component={AdminPage} />
+        <Route path="/admin/users" component={UserAdmin} />
       </Switch>
     </>
   )

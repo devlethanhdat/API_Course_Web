@@ -3,6 +3,7 @@ using System;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250526090329_AddRatingToDb")]
+    partial class AddRatingToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,12 +159,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Dislikes")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Likes")
-                        .HasColumnType("integer");
 
                     b.Property<string>("ReviewText")
                         .HasColumnType("text");
@@ -460,13 +457,13 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7e379381-126c-4414-abb4-d422d2ad0f75",
+                            Id = "1098745c-78e7-41e4-a58d-fe6b0759c261",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "549ad0c5-7c41-4fad-9883-74bdb7067b9d",
+                            Id = "fcb28e7a-68d0-4fc2-ba4f-76387b9390e7",
                             Name = "Instructor",
                             NormalizedName = "INSTRUCTOR"
                         });

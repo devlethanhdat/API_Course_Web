@@ -89,7 +89,7 @@ namespace API.Controllers
                   var lecture = new Lecture
                   {
                       Title = item.Title,
-                      Url = item.Url,
+                      Url = item.VideoUrl,
                       Section = section
                   };
 

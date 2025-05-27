@@ -50,41 +50,41 @@ const ShowCourses = ({ course, noCol }: Props) => {
   }
 
   const card = (
-    <Card
-      hoverable
-      cover={<img width="100%" alt="course-cover" src={course.image} />}
+        <Card
+          hoverable
+          cover={<img width="100%" alt="course-cover" src={course.image} />}
       className="show-course"
-    >
-      <Link to={`/course/${course.id}`}>
-        <div className="course__title">{course.title}</div>
-      </Link>
-      <div className="course__instructor">{course.instructor}</div>
-      <div className="course__rating">
-        {course.rating}
-        <span>{showStars(course.rating)}</span>
-      </div>
-      <div className="course__bottom">
-        <div className="course__bottom__price">{course.price}</div>
-        {userCourses?.find((item) => item.id === course.id) !== undefined ? (
-          <Link to={`/learn/${course.id}/${currentLecture}`}>
-            <div className="course__bottom__cart">Go to Course</div>
+        >
+          <Link to={`/course/${course.id}`}>
+            <div className="course__title">{course.title}</div>
           </Link>
-        ) : basket?.items.find((item) => item.courseId === course.id) !== undefined ? (
-          <Link to="/basket">
-            <div className="course__bottom__cart">Go to Cart</div>
-          </Link>
-        ) : (
-          <div
-            onClick={() => {
-              dispatch(addBasketItemAsync({ courseId: course.id }))
-            }}
-            className="course__bottom__cart"
-          >
-            Add to cart
+          <div className="course__instructor">{course.instructor}</div>
+          <div className="course__rating">
+            {course.rating}
+            <span>{showStars(course.rating)}</span>
           </div>
-        )}
-      </div>
-    </Card>
+          <div className="course__bottom">
+            <div className="course__bottom__price">{course.price}</div>
+        {userCourses?.find((item) => item.id === course.id) !== undefined ? (
+              <Link to={`/learn/${course.id}/${currentLecture}`}>
+                <div className="course__bottom__cart">Go to Course</div>
+              </Link>
+        ) : basket?.items.find((item) => item.courseId === course.id) !== undefined ? (
+              <Link to="/basket">
+                <div className="course__bottom__cart">Go to Cart</div>
+              </Link>
+            ) : (
+              <div
+                onClick={() => {
+                  dispatch(addBasketItemAsync({ courseId: course.id }))
+                }}
+                className="course__bottom__cart"
+              >
+                Add to cart
+              </div>
+            )}
+          </div>
+        </Card>
   );
 
   if (noCol) return card;
@@ -92,7 +92,7 @@ const ShowCourses = ({ course, noCol }: Props) => {
   return (
     <Col className="gutter-row" span={spanVal}>
       {card}
-    </Col>
+      </Col>
   );
 }
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { courseService } from "../services/courseService";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Editor } from '@tinymce/tinymce-react';
 // import './CreateCourse.scss';  // Update import path
 import '../styles/EditCourse.scss';
 
@@ -127,9 +128,26 @@ const EditCourse = () => {
             <Form.Item
               name="description"
               label="Description"
-              rules={[{ required: true }]}
+              rules={[{ required: true, message: 'Please enter course description' }]}
             >
-              <Input.TextArea rows={6} />
+              <Editor
+                apiKey="h8wvot79f147p7qnqy9ilf18w3mcegx8qqt3qvgr94kxjn6r" // Thay bằng apiKey của bạn nếu có
+                value={form.getFieldValue('description') || ''}
+                init={{
+                  height: 320,
+                  menubar: false,
+                  plugins: [
+                    'advlist autolink lists link image charmap preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table code help wordcount'
+                  ],
+                  toolbar:
+                    'undo redo | formatselect | bold italic backcolor | \
+                    alignleft aligncenter alignright alignjustify | \
+                    bullist numlist outdent indent | removeformat | help'
+                }}
+                onEditorChange={(content) => form.setFieldsValue({ description: content })}
+              />
             </Form.Item>
 
             <Form.Item

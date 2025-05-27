@@ -33,5 +33,7 @@ namespace API.Dto
         public ICollection<RequirementDto> Requirements { get; set; }
 
         public ICollection<LearningDto> Learnings { get; set; }
+
+        public ICollection<SectionDto> Sections { get; set; } = new List<SectionDto>();
     }
 }

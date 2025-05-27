@@ -25,6 +25,8 @@ namespace Infrastructure
         // Add new DbSet for StripePayment
         public DbSet<StripePayment> StripePayments { get; set; }
 
+        public DbSet<CourseRating> CourseRatings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

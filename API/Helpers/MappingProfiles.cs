@@ -10,7 +10,8 @@ namespace API.Helpers
         {
             CreateMap<Course, CourseDto>()
                 .ForMember(c => c.Category,
-                o => o.MapFrom(s => s.Category.Name));
+                o => o.MapFrom(s => s.Category.Name))
+                .ForMember(dest => dest.Sections, opt => opt.MapFrom(src => src.Sections));
 
             CreateMap<Learning, LearningDto>();
 
@@ -29,7 +30,8 @@ namespace API.Helpers
             .ForMember(b => b.Instructor, o => o.MapFrom(c => c.Course.Instructor));
             CreateMap<Section, SectionDto>()
             .ForMember(s => s.SectionName, o => o.MapFrom(c => c.Name));
-            CreateMap<Lecture, LectureDto>();
+            CreateMap<Lecture, LectureDto>()
+            .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom(src => src.Url));
         }
     }
 }

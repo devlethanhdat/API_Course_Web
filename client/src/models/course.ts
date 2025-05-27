@@ -16,6 +16,7 @@ export interface Course {
   learnings: Learning[];
   requirements: Requirement[];
   lectures?: Lecture[];
+  sections?: Section[];
 }
 
 export interface CourseParams {
@@ -54,3 +55,18 @@ export interface Lecture {
   content?: string;
   // ... các trường khác nếu có
 }
+
+export interface Section {
+  sectionName: string;
+  lectures: Lecture[];
+}
+
+export type CourseReview = {
+  value: number;
+  reviewText: string;
+  createdAt: string;
+  userName: string;
+  likes?: number;
+  dislikes?: number;
+  id?: string;
+};

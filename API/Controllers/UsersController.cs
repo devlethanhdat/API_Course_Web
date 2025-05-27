@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using Google.Apis.Auth;
+using System.Security.Claims;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace API.Controllers
 {
@@ -166,6 +170,155 @@ namespace API.Controllers
 
             return courses;
         }
+
+        [HttpPost("google-login")]
+        public async Task<ActionResult<UserDto>> GoogleLogin([FromBody] SocialLoginDto dto)
+        {
+            try
+            {
+                Console.WriteLine("Google token: " + dto.Token);
+                var payload = await GoogleJsonWebSignature.ValidateAsync(dto.Token, new GoogleJsonWebSignature.ValidationSettings());
+                var user = await _userManager.FindByEmailAsync(payload.Email);
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Email = payload.Email,
+                        UserName = payload.Email,
+                    };
+                    var result = await _userManager.CreateAsync(user);
+                    if (!result.Succeeded)
+                        return BadRequest(new ApiResponse(400, "Cannot create user from Google account"));
+                    await _userManager.AddToRoleAsync(user, "Student");
+                }
+                var appToken = await _tokenService.GenerateToken(user);
+                return new UserDto
+                {
+                    Email = user.Email,
+                    Token = appToken
+                };
+            }
+            catch
+            {
+                return Unauthorized(new ApiResponse(401, "Invalid Google token"));
+            }
+        }
+
+        [HttpPost("facebook-login")]
+        public async Task<ActionResult<UserDto>> FacebookLogin([FromBody] SocialLoginDto dto)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                var fbRes = await httpClient.GetStringAsync(
+                    $"https://graph.facebook.com/me?fields=id,name,email,picture&access_token={dto.Token}");
+                var fbUser = JsonDocument.Parse(fbRes).RootElement;
+
+                var email = fbUser.GetProperty("email").GetString();
+                var name = fbUser.GetProperty("name").GetString();
+
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Email = email,
+                        UserName = email,
+                    };
+                    var result = await _userManager.CreateAsync(user);
+                    if (!result.Succeeded)
+                        return BadRequest(new ApiResponse(400, "Cannot create user from Facebook account"));
+                    await _userManager.AddToRoleAsync(user, "Student");
+                }
+                var appToken = await _tokenService.GenerateToken(user);
+                return new UserDto
+                {
+                    Email = user.Email,
+                    Token = appToken
+                };
+            }
+            catch
+            {
+                return Unauthorized(new ApiResponse(401, "Invalid Facebook token"));
+            }
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null) return Unauthorized();
+
+            var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                // Trả về lỗi chi tiết cho FE
+                return BadRequest(new { errors = result.Errors.Select(e => e.Description).ToList() });
+            }
+
+            return Ok(new { message = "Đổi mật khẩu thành công!" });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin/users")]
+        public async Task<ActionResult<IEnumerable<AdminUserDto>>> GetAllUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userDtos = new List<AdminUserDto>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userDtos.Add(new AdminUserDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Roles = roles
+                });
+            }
+            return Ok(userDtos);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("admin/users")]
+        public async Task<ActionResult> CreateUser([FromBody] RegisterDto dto)
+        {
+            var user = new User { UserName = dto.Username, Email = dto.Email };
+            var result = await _userManager.CreateAsync(user, dto.Password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors.Select(e => e.Description));
+            await _userManager.AddToRoleAsync(user, "Student");
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("admin/users/{id}")]
+        public async Task<ActionResult> UpdateUser(string id, [FromBody] AdminUserDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+            user.UserName = dto.UserName;
+            user.Email = dto.Email;
+            await _userManager.UpdateAsync(user);
+            // Update roles
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _userManager.AddToRolesAsync(user, dto.Roles);
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("admin/users/{id}")]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+            await _userManager.DeleteAsync(user);
+            return Ok();
+        }
+
         private async Task<Basket> ExtractBasket(string clientId)
         {
             if (string.IsNullOrEmpty(clientId))

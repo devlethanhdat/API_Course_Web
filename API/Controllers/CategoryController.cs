@@ -32,6 +32,7 @@ public class CategoryController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Category>> CreateCategory(Category category)
     {
+        category.Id = 0;
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);

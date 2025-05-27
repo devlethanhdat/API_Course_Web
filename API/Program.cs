@@ -3,6 +3,8 @@ using API.Helpers;
 using API.Middleware;
 using Entity.Interfaces;
 using Infrastructure.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +29,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenKey"])
             ),
-            ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha512 } // Quan trọng
+            ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha512 }, // Quan trọng
+            //NameClaimType = JwtRegisteredClaimNames.Sub
         };
 
         options.Events = new JwtBearerEvents
@@ -129,7 +132,11 @@ app.UseStatusCodePagesWithReExecute("/redirect/{0}");
 app.UseRouting();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.UseCors("CorsPolicy");
+app.UseCors(builder =>
+    builder.WithOrigins("http://localhost:3000")
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowCredentials());
 
 app.UseAuthentication();
 app.UseAuthorization();

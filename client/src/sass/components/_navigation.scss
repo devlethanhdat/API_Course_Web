@@ -17,11 +17,11 @@ $bp-medium: 900px;
   &__container {
     max-width: 1280px;
     margin: 0 auto;
-    display: flex;
+  display: flex;
     align-items: center;
     padding: 0 32px;
     height: 64px;
-    justify-content: space-between;
+  justify-content: space-between;
   }
 
   &__logo {
@@ -43,7 +43,7 @@ $bp-medium: 900px;
       font-weight: 900;
       letter-spacing: 1px;
     }
-  }
+    }
 
   &__links {
     display: flex;
@@ -72,8 +72,8 @@ $bp-medium: 900px;
           color: $accent;
           &::after {
             width: 100%;
-          }
-        }
+      }
+    }
       }
     }
     @media (max-width: $bp-medium) {
@@ -100,7 +100,7 @@ $bp-medium: 900px;
       &:focus {
         box-shadow: 0 0 0 2px $accent;
         border: 1px solid $accent;
-      }
+    }
     }
     button {
       background: none;
@@ -129,7 +129,7 @@ $bp-medium: 900px;
   &__cart {
     color: $white;
     font-size: 1.5rem;
-    position: relative;
+      position: relative;
     transition: color 0.2s;
     .cart-icon {
       transition: transform 0.2s;
@@ -146,9 +146,9 @@ $bp-medium: 900px;
       border-radius: 50%;
       font-size: 0.8rem;
       padding: 2px 6px;
-      font-weight: bold;
-    }
-  }
+          font-weight: bold;
+        }
+      }
   @keyframes shake {
     0% { transform: rotate(0deg);}
     20% { transform: rotate(-10deg);}
@@ -169,8 +169,8 @@ $bp-medium: 900px;
     transition: color 0.2s;
     &:hover {
       color: $accent;
-    }
-  }
+        }
+      }
 
   &__hamburger {
     display: none;
@@ -179,8 +179,8 @@ $bp-medium: 900px;
     cursor: pointer;
     @media (max-width: $bp-medium) {
       display: block;
+      }
     }
-  }
 
   // Sidebar
   &__sidebar {
@@ -246,7 +246,7 @@ $bp-medium: 900px;
   }
 
   &__overlay {
-    position: fixed;
+  position: fixed;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
     background: rgba(0,0,0,0.25);
@@ -274,12 +274,12 @@ $bp-medium: 900px;
     position: absolute;
     top: 120%;
     left: 0;
-    width: 100%;
+  width: 100%;
     background: $white;
     border-radius: 0 0 12px 12px;
     box-shadow: 0 8px 24px rgba(30,60,114,0.12);
     z-index: 999;
-    list-style: none;
+  list-style: none;
     margin: 0;
     padding: 8px 0 8px 0;
     max-height: 320px;
@@ -304,7 +304,7 @@ $bp-medium: 900px;
         font-size: 1rem;
         color: $primary;
         font-weight: 500;
-      }
+}
       &:last-child {
         border-bottom: none;
       }

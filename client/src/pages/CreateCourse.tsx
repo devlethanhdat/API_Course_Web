@@ -9,6 +9,7 @@ import { RegisterCourse } from "../models/course";
 import { categoriesSelector } from "../redux/slice/categorySlice";
 import { useAppSelector } from "../redux/store/configureStore";
 import './CreateCourse.scss';
+import { Editor } from '@tinymce/tinymce-react';
 
 const { Step } = Steps;
 
@@ -128,12 +129,22 @@ const CreateCourse = () => {
             <Input className="styled-input" onChange={handleChange} name="subTitle" value={subTitle} />
           </Form.Item>
           <Form.Item name="description" label="Description" rules={[{ required: true }]}>
-            <Input.TextArea 
-              className="styled-textarea" 
-              rows={6}
-              onChange={handleChange}
-              name="description"
-              value={description}
+            <Editor
+              apiKey="h8wvot79f147p7qnqy9ilf18w3mcegx8qqt3qvgr94kxjn6r"
+              value={typeof description === 'string' ? description : ''}
+              init={{
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                api_key: 'h8wvot79f147p7qnqy9ilf18w3mcegx8qqt3qvgr94kxjn6r',
+                tinycomments_mode: 'embedded',
+                tinycomments_author: 'Author name',
+                mergetags_list: [
+                    { value: 'First.Name', title: 'First Name' },
+                    { value: 'Email', title: 'Email' },
+                ],
+                ai_request: (request: any, respondWith: any) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+              }}
+              onEditorChange={(content) => setValues({ ...values, description: content || "" })}
             />
           </Form.Item>
         </Card>

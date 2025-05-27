@@ -1,5 +1,5 @@
 import React, { ChangeEvent, SyntheticEvent, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useAppSelector } from '../redux/store/configureStore'
 import { removeBasket } from '../redux/slice/basketSlice'
@@ -59,7 +59,8 @@ const Navigation = () => {
       setSuggestions([]);
     }
   }, 300); // 300ms debounce
-
+  const location = useLocation();
+  if (location.pathname === '/login') return null; 
   return (
     <nav className="nav-main">
       <div className="nav-main__container">
@@ -69,31 +70,31 @@ const Navigation = () => {
         </Link>
 
         <ul className="nav-main__links">
-          <li>
+                <li>
             <Link to="/"><FaIcons.FaHome /> Home</Link>
-          </li>
+                </li>
           {user && (
-            <li>
+                    <li>
               <Link to="/profile"><FaIcons.FaUserGraduate /> Profile</Link>
             </li>
           )}
           <li>
             <Link to="/courses"><FaIcons.FaBookOpen /> Courses</Link>
-          </li>
-        </ul>
+              </li>
+          </ul>
 
         <form className="nav-main__search" onSubmit={onSearch} autoComplete="off">
-          <input
-            type="text"
+            <input
+              type="text"
             placeholder="Search courses..."
-            value={searchText}
-            onChange={handleChange}
+              value={searchText}
+              onChange={handleChange}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             onFocus={() => searchText && setShowSuggestions(true)}
-          />
+            />
           <button type="submit" aria-label="Search">
             <FaIcons.FaSearch />
-          </button>
+            </button>
           {showSuggestions && suggestions.length > 0 && (
             <ul className="nav-main__suggestions">
               {suggestions.map(course => (
@@ -110,14 +111,14 @@ const Navigation = () => {
               ))}
             </ul>
           )}
-        </form>
+          </form>
 
         <div className="nav-main__right">
           <Link to="/basket" className="nav-main__cart">
             <FaIcons.FaShoppingCart className="cart-icon" />
-            {basketCount! > 0 && (
+              {basketCount! > 0 && (
               <span className="nav-main__cart__count">{basketCount}</span>
-            )}
+              )}
           </Link>
           {user ? (
             <div className="nav-main__avatar-dropdown">
@@ -128,7 +129,7 @@ const Navigation = () => {
             <Link to="/login" className="nav-main__login">
               <FaIcons.FaUserCircle />
               <span>Login</span>
-            </Link>
+          </Link>
           )}
         </div>
 
@@ -174,7 +175,7 @@ const Navigation = () => {
             </li>
           )}
         </ul>
-      </div>
+    </div>
       {sidebar && <div className="nav-main__overlay" onClick={() => setSidebar(false)} />}
     </nav>
   )

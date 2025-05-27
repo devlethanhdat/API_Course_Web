@@ -13,5 +13,5 @@ export interface SectionDto {
 export interface LectureDto {
   id: number
   title: string
-  url: string
+  videoUrl: string
 }

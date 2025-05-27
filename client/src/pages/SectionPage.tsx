@@ -82,10 +82,15 @@ const SectionPage = ({ match }: RouteComponentProps<any>) => {
 
   const publishSection = async () => {
     try {
+      const lectures = lectureForm.map((item: any) => ({
+        Title: item.Title,
+        VideoUrl: item.Url
+      }));
+
       const response = await agent.Lectures.create({
         courseId: match.params.course,
         sectionName: sectionName,
-        lectures: lectureForm,
+        lectures: lectures,
       });
 
       notification.success({

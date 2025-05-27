@@ -6,6 +6,6 @@ namespace API.Dto
     {
         public string SectionName { get; set; }
 
-        public List<LectureDto> Lectures { get; set; }
+        public List<LectureDto> Lectures { get; set; } = new List<LectureDto>();
     }
 }
