@@ -9,6 +9,8 @@ import { InstructorStatsDto } from '../models/stats' // Add this import
 import { notification } from 'antd'
 import { Order } from '../models/order'
 import { CourseStudentCountDto, CourseRevenueDto, OrderTrendDto } from '../models/stats'
+import { Button, Modal, Descriptions, Tag } from 'antd'
+import { useState } from 'react'
 axios.defaults.baseURL = "http://localhost:5001/api";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data
@@ -77,7 +79,7 @@ const requests = {
       .then(responseBody),
   post: <T>(url: string, body: {}) =>
     axios.post<T>(url, body).then(responseBody),
-  put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+  put: <T>(url: string, body: {} | undefined) => axios.put<T>(url, body).then(responseBody),
   del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
   delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 }
@@ -104,9 +106,10 @@ const Courses = {
     return requests.put<Course>(`/courses/${id}`, course);
   },
   publish: (courseId: string) =>
-    requests.post<string>(`courses/publish/${courseId}`, {}),
+    requests.put<string>(`courses/publish/${courseId}`, undefined),
   delete: (id: string) => requests.del(`/courses/${id}`),
   getInstructorStats: () => requests.get<InstructorStatsDto>('courses/stats'),
+  unpublish: (courseId: string) => requests.put<string>(`courses/unpublish/${courseId}`, {}),
 }
 
 const Categories = {

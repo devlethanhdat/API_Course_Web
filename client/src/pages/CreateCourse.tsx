@@ -131,7 +131,7 @@ const CreateCourse = () => {
           <Form.Item name="description" label="Description" rules={[{ required: true }]}>
             <Editor
               apiKey="h8wvot79f147p7qnqy9ilf18w3mcegx8qqt3qvgr94kxjn6r"
-              value={typeof description === 'string' ? description : ''}
+              value={String(description || '')}
               init={{
                 plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
                 toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
@@ -144,7 +144,12 @@ const CreateCourse = () => {
                 ],
                 ai_request: (request: any, respondWith: any) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
               }}
-              onEditorChange={(content) => setValues({ ...values, description: content || "" })}
+              onEditorChange={(content) => {
+                setValues(prevValues => ({
+                  ...prevValues,
+                  description: String(content) || ""
+                }));
+              }}
             />
           </Form.Item>
         </Card>

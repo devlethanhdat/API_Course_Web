@@ -116,8 +116,8 @@ namespace API.Controllers
             return BadRequest(new ApiResponse(400, "Problem updating course"));
         }
 
-        [Authorize(Roles = "Instructor")]
-         [HttpPost("publish/{courseId}")]
+        [Authorize(Roles = "Admin,Instructor")]
+         [HttpPut("publish/{courseId}")]
 
          public async Task<ActionResult<string>> PublishCourse(Guid courseId)
          {
@@ -125,6 +125,8 @@ namespace API.Controllers
              var course = await _context.Courses.FindAsync(courseId);
 
             if(course == null) return NotFound(new ApiResponse(404));
+
+            if (course.Published) return Ok("Course is already published");
 
             course.Published = true;
 
@@ -135,27 +137,35 @@ namespace API.Controllers
             return BadRequest(new ApiResponse(400, "Problem publishing the Course"));
 
          }
-       [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCourse(Guid id) // Đổi kiểu dữ liệu thành Guid
-        {
-            try 
-            {
-                var course = await _context.Courses.FindAsync(id);
-                
-                if (course == null)
-                {
-                    return NotFound(new { message = "Course not found" });
-                }
 
-                _context.Courses.Remove(course);
-                await _context.SaveChangesAsync();
-                
-                return Ok(new { message = "Course deleted successfully" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+        [Authorize(Roles = "Admin,Instructor")]
+        [HttpPut("unpublish/{courseId}")]
+        public async Task<ActionResult<string>> UnpublishCourse(Guid courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+
+            if (course == null) return NotFound(new ApiResponse(404));
+
+            course.Published = false;
+
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if (result) return "Course Unpublished Successfully";
+
+            return BadRequest(new ApiResponse(400, "Problem unpublishing the Course"));
+        }
+
+       [Authorize(Roles = "Admin,Instructor")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourse(Guid id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null)
+                return NotFound(new { message = "Course not found" });
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Course deleted successfully" });
         }
 
         [HttpGet("stats")]

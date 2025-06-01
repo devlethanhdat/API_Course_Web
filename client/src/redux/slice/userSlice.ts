@@ -5,16 +5,18 @@ import { Course } from '../../models/course'
 import { Login, Register, User } from '../../models/user'
 import { setBasket } from './basketSlice'
 
-interface UserState {
+export interface UserState {
   user: User | null
   userCourses: Course[]
   unpublishedCourses: Course[]
+  courses: Course[]
 }
 
 const initialState: UserState = {
   user: null,
   userCourses: [],
-  unpublishedCourses: []
+  unpublishedCourses: [],
+  courses: []
 }
 
 export const fetchCurrentUser = createAsyncThunk<User>(
@@ -106,6 +108,7 @@ export const userSlice = createSlice({
         ...action.payload,
         roles: typeof roles === 'string' ? [roles] : roles,
       };
+      state.courses = action.payload.courses || [];
     },
     setUserCourses: (state, action) => {
       state.userCourses = action.payload

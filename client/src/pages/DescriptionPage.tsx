@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Learning, Requirement, Lecture, Section, CourseReview } from '../models/course'
+import { Learning, Requirement, Lecture, Section, CourseReview, Course } from '../models/course'
 import { useParams } from 'react-router'
 import { Link, useHistory } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../redux/store/configureStore'
+import { getCourseAsync, coursesSelector } from '../redux/slice/courseSlice'
 import { addBasketItemAsync } from '../redux/slice/basketSlice'
-import { coursesSelector, getCourseAsync } from '../redux/slice/courseSlice'
 import ReactPlayer from 'react-player'
 import { FaLock, FaPlay, FaChalkboardTeacher, FaLanguage, FaUsers, FaTag, FaBookOpen, FaCheckCircle } from 'react-icons/fa'
 import { Card, Button, Tag, Collapse, Progress, Tooltip, Row, Col, Typography, Divider, Space, Rate } from 'antd'
@@ -39,6 +39,7 @@ const DescriptionPage = () => {
   const { basket } = useAppSelector((state) => state.basket)
   const [loading, setLoading] = useState(true)
   const [reviews, setReviews] = useState<CourseReview[]>([])
+  const userCourses = useAppSelector(state => state.user.userCourses);
 
   const fetchReviews = async () => {
     try {
@@ -91,6 +92,7 @@ const DescriptionPage = () => {
       dispatch(addBasketItemAsync({ courseId: id }));
       toast.success('Added to cart!')
     }
+    dispatch(getCourseAsync({ courseId: id }));
     history.push('/checkout')
   }
 
@@ -121,6 +123,8 @@ const DescriptionPage = () => {
     fetchReviews();
   };
 
+  const isPurchased = userCourses?.some((c: Course) => c.id === course?.id);
+
   return (
     <motion.div
       className="descpage-ant-wrapper"
@@ -144,7 +148,11 @@ const DescriptionPage = () => {
                     <Tooltip title="Instructor" placement="top"><span><FaChalkboardTeacher /> {loading ? <Skeleton width={80} /> : course?.instructor}</span></Tooltip>
                     <Tooltip title="Language" placement="top"><span><FaLanguage /> {loading ? <Skeleton width={40} /> : course?.language}</span></Tooltip>
                     <Tooltip title="Category" placement="top"><span><FaTag /> {loading ? <Skeleton width={60} /> : course?.category}</span></Tooltip>
-                    <Tooltip title="Enrolled" placement="top"><span><FaUsers /> {loading ? <Skeleton width={30} /> : course?.students}</span></Tooltip>
+                    <Tooltip title="Enrolled" placement="top">
+                      <span>
+                        <FaUsers /> {loading ? <Skeleton width={30} /> : course?.students}
+                      </span>
+                    </Tooltip>
                     <Tooltip title="Level" placement="top"><span>{loading ? <Skeleton width={40} /> : course?.level}</span></Tooltip>
                     <Tooltip title="Last updated" placement="top"><span>{loading ? <Skeleton width={80} /> : getParsedDate(course?.lastUpdated)}</span></Tooltip>
                   </Space>
@@ -298,32 +306,47 @@ const DescriptionPage = () => {
                       </div>
                       <Divider />
                       <Space direction="vertical" style={{ width: '100%' }}>
-                        {basket?.items.find((item) => item.courseId === course?.id) !== undefined ? (
-                          <Link to="/basket">
-                            <Button type="primary" icon={<ShoppingCartOutlined />} block size="large">
-                              Go to cart
+                        {isPurchased ? (
+                          <Link to={`/learn/${course?.id}`}>
+                            <Button
+                              type="primary"
+                              block
+                              size="large"
+                              style={{ background: '#52c41a', borderColor: '#52c41a' }}
+                            >
+                              Go to course
                             </Button>
                           </Link>
                         ) : (
-                          <Button
-                            type="primary"
-                            icon={<ShoppingCartOutlined />}
-                            block
-                            size="large"
-                            onClick={handleAddToCart}
-                          >
-                            Add to cart
-                          </Button>
+                          <>
+                            {basket?.items.find((item) => item.courseId === course?.id) !== undefined ? (
+                              <Link to="/basket">
+                                <Button type="primary" icon={<ShoppingCartOutlined />} block size="large">
+                                  Go to cart
+                                </Button>
+                              </Link>
+                            ) : (
+                              <Button
+                                type="primary"
+                                icon={<ShoppingCartOutlined />}
+                                block
+                                size="large"
+                                onClick={handleAddToCart}
+                              >
+                                Add to cart
+                              </Button>
+                            )}
+                            <Button
+                              type="default"
+                              block
+                              size="large"
+                              className="descpage-booknow-btn"
+                              onClick={() => bookNow(course!.id)}
+                            >
+                              Book now
+                            </Button>
+                          </>
                         )}
-                        <Button
-                          type="default"
-                          block
-                          size="large"
-                          className="descpage-booknow-btn"
-                          onClick={() => bookNow(course!.id)}
-                        >
-                          Book now
-                        </Button>
                       </Space>
                       <Divider />
                       <div className="descpage-progress">

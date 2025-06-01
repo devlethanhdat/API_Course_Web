@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Card, Col, Radio, Row, Skeleton } from 'antd'
+import { Card, Col, Radio, Row, Skeleton, Select, Tooltip } from 'antd'
 import { Course } from '../models/course'
 import ShowCourses from '../components/ShowCourses'
 import { Pagination } from 'antd'
@@ -21,13 +21,38 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { Typewriter } from 'react-simple-typewriter'
 import banner4 from '../assets/fe441235d728b50c6003b3e59cd807cb.gif';
+import { SortAscendingOutlined, SortDescendingOutlined, FontSizeOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 const bannerImages = [banner4,banner4,banner4,banner4];
 const sortOptions = [
-  { value: 'title', label: 'Alphabetical' },
-  { value: 'priceDescending', label: 'Price - High to low' },
-  { value: 'priceAscending', label: 'Price - Low to high' },
-]
+  {
+    value: 'title',
+    label: (
+      <span>
+        <FontSizeOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+        Theo bảng chữ cái
+      </span>
+    ),
+  },
+  {
+    value: 'priceDescending',
+    label: (
+      <span>
+        <SortDescendingOutlined style={{ marginRight: 8, color: '#fa541c' }} />
+        Giá cao đến thấp
+      </span>
+    ),
+  },
+  {
+    value: 'priceAscending',
+    label: (
+      <span>
+        <SortAscendingOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+        Giá thấp đến cao
+      </span>
+    ),
+  },
+];
 
 const Homepage = () => {
   const data = useAppSelector(coursesSelector.selectAll)
@@ -110,7 +135,11 @@ const Homepage = () => {
         <h1>
           <FaFire color="#ff9800" style={{ marginRight: 8 }} />
           <Typewriter
-            words={['What to learn Next?', 'Explore new skills!', 'Upgrade your knowledge!']}
+            words={[
+              'Bạn muốn học gì tiếp theo?',
+              'Khám phá kỹ năng mới!',
+              'Nâng cấp kiến thức của bạn!',
+            ]}
             loop={0}
             cursor
             cursorStyle='_'
@@ -121,7 +150,7 @@ const Homepage = () => {
         </h1>
         <h2>
           <FaStar color="#ffd700" style={{ marginRight: 6 }} />
-          New Courses picked just for you...
+          Các khóa học mới dành cho bạn...
         </h2>
       </div>
       <div style={{ width: '100%', height: '30%', maxWidth: 1280, margin: '0 auto' }}>
@@ -139,16 +168,41 @@ const Homepage = () => {
           </div>
       <Row gutter={[24, 32]}>
         <Col span={4}>
-          <Card title="Sorting Options">
-            <Radio.Group
-              options={sortOptions}
+          <Card
+            title={
+              <span style={{ fontWeight: 700, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <SortAscendingOutlined style={{ marginRight: 8, color: '#722ed1' }} />
+                Sắp xếp khóa học
+                <Tooltip title="Chọn cách sắp xếp danh sách khóa học" placement="right">
+                  <InfoCircleOutlined style={{ marginLeft: 8, color: '#1890ff' }} />
+                </Tooltip>
+              </span>
+            }
+            style={{
+              marginBottom: 24,
+              borderRadius: 16,
+              boxShadow: '0 4px 24px #e3e9f7',
+              border: 'none',
+              background: 'linear-gradient(135deg, #f0f5ff 0%, #e6fffb 100%)',
+            }}
+          >
+            <Select
+              style={{
+                width: '100%',
+                fontWeight: 600,
+                fontSize: 16,
+                borderRadius: 8,
+                background: '#fff',
+              }}
               value={courseParams.sort}
-              onChange={(e) =>
-                dispatch(setCourseParams({ sort: e.target.value }))
-              }
+              options={sortOptions}
+              onChange={(value) => dispatch(setCourseParams({ sort: value }))}
+              size="large"
+              dropdownStyle={{ minWidth: 220, fontSize: 16 }}
+              placeholder="Chọn cách sắp xếp"
             />
           </Card>
-          <Card title="Choose Category">
+          <Card title="Chọn danh mục">
             <Radio.Group
               options={getCategories()}
               value={courseParams.category}
