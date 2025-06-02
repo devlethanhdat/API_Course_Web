@@ -10,5 +10,7 @@ namespace API.Dto
         public string PaymentIntentId { get; set; }
 
         public string ClientSecret { get; set; }
+
+        public decimal Discount { get; set; }
     }
 }

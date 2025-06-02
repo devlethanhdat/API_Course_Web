@@ -16,6 +16,8 @@ namespace Entity
 
         public string ClientSecret { get; set; }
 
+        public decimal Discount { get; set; } = 0;
+
         public void AddCourseItem(Course course)
         {
             if(Items.All(item => item.CourseId != course.Id))

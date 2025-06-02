@@ -11,7 +11,11 @@ interface Props {
 
 const CheckoutSummary = ({ stripe, handleSubmit, isLoading }: Props) => {
   const { basket } = useAppSelector((state) => state.basket)
-  const total = basket?.items.reduce((sum, item) => sum + item.price, 0)
+  const total = basket?.items.reduce((sum, item) => sum + item.price, 0) ?? 0
+  const discount = basket?.discount ?? 0
+
+  console.log('Basket in CheckoutSummary:', basket)
+  console.log('Total:', total, 'Discount:', discount)
 
   return (
     <>
@@ -19,8 +23,18 @@ const CheckoutSummary = ({ stripe, handleSubmit, isLoading }: Props) => {
         <h2>Summary</h2>
         <Divider type="horizontal" />
         <div className="checkout__summary__total">
-          <span>Total: </span>
-          <span>$ {total}</span>
+          <span>Tổng tiền gốc: </span>
+          <span>$ {total.toLocaleString()}</span>
+        </div>
+        {discount > 0 && (
+          <div style={{ color: 'green' }}>
+            <span>Giảm giá: </span>
+            <span>-${discount.toLocaleString()}</span>
+          </div>
+        )}
+        <div className="checkout__summary__total">
+          <span>Thành tiền: </span>
+          <span>$ {(total - discount).toLocaleString()}</span>
         </div>
         <Divider type="horizontal" />
         <Button

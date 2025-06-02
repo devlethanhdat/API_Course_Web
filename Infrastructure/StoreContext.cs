@@ -27,6 +27,8 @@ namespace Infrastructure
 
         public DbSet<CourseRating> CourseRatings { get; set; }
 
+        public DbSet<Coupon> Coupons { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

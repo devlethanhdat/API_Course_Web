@@ -90,7 +90,7 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(30,60,114,0.18);
-  display: flex;
+    display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
@@ -107,7 +107,7 @@
   color: #1a2340 !important;
   font-weight: 800 !important;
   margin-bottom: 1.2rem !important;
-  display: flex;
+      display: flex;
   align-items: center;
   gap: 10px;
   letter-spacing: -0.5px;
@@ -168,7 +168,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 700;
+          font-weight: 700;
   color: #1a2340;
   margin-bottom: 0.5rem;
   .anticon { animation: iconPop 0.7s; }
@@ -263,7 +263,7 @@
   transition: background 0.2s, transform 0.1s;
   box-shadow: 0 2px 12px #e3e9f7;
   letter-spacing: 0.5px;
-  &:hover {
+          &:hover {
     background: linear-gradient(90deg, #3b82f6 0%, #1a2340 100%) !important;
     color: #fff !important;
     transform: scale(1.04);

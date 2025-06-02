@@ -64,34 +64,34 @@ const Signin = ({ toggleRegister, onSubmit }: Props) => {
             />
           </div>
           <Card className="log-in-card login-modern-card glass-card" style={{ borderRadius: 32, marginTop: -40 }}>
-            <div className="log-in-card__intro">
-              <Typography>
+        <div className="log-in-card__intro">
+          <Typography>
                 <Title level={2} className="log-in-card__intro-title login-modern-title">
                   Welcome back!
-                </Title>
+            </Title>
                 <Text className="login-modern-subtitle">Sign in to your Learnify account</Text>
-              </Typography>
-            </div>
+          </Typography>
+        </div>
             <Content className="log-in__form login-modern-form">
-              <Form
-                name="login"
+          <Form
+            name="login"
                 layout="vertical"
-                autoComplete="off"
-                initialValues={values}
-                onFinish={onFinish}
-                form={form}
-              >
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter a valid email!',
-                      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    },
-                  ]}
-                >
+            autoComplete="off"
+            initialValues={values}
+            onFinish={onFinish}
+            form={form}
+          >
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter a valid email!',
+                  pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                },
+              ]}
+            >
                   <Input
                     prefix={<MailOutlined style={{ color: '#3b82f6' }} />}
                     value={email}
@@ -101,29 +101,29 @@ const Signin = ({ toggleRegister, onSubmit }: Props) => {
                     placeholder="Email address"
                     className="login-modern-input login-animated-input"
                   />
-                </Form.Item>
+            </Form.Item>
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter a valid password!',
-                      min: 6,
-                    },
-                  ]}
-                >
-                  <Input.Password
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter a valid password!',
+                  min: 6,
+                },
+              ]}
+            >
+              <Input.Password
                     prefix={<LockOutlined style={{ color: '#3b82f6' }} />}
-                    name="password"
-                    value={password}
-                    onChange={handleChange}
+                name="password"
+                value={password}
+                onChange={handleChange}
                     size="large"
                     placeholder="Password"
                     className="login-modern-input login-animated-input"
-                  />
-                </Form.Item>
+              />
+            </Form.Item>
                 <div className="login-modern-forgot">
                   <a href="#" className="login-modern-forgot-link">Forgot password?</a>
                 </div>
@@ -137,9 +137,9 @@ const Signin = ({ toggleRegister, onSubmit }: Props) => {
                       block
                     >
                       Sign In
-                    </Button>
+              </Button>
                   </motion.div>
-                </Form.Item>
+            </Form.Item>
 
                 <div className="login-social-divider">
                   <span>or</span>
@@ -165,8 +165,16 @@ const Signin = ({ toggleRegister, onSubmit }: Props) => {
                           const data = JSON.parse(text);
                           if (data.token) {
                             localStorage.setItem('token', data.token);
-                            console.log('Redirecting to /profile');
-                            window.location.href = '/profile';
+                            // Gọi API lấy user info
+                            fetch(`${API_URL}/users/currentUser`, {
+                              headers: { 'Authorization': `Bearer ${data.token}` }
+                            })
+                              .then(res => res.json())
+                              .then(user => {
+                                localStorage.setItem('user', JSON.stringify(user));
+                                console.log('Redirecting to /profile');
+                                window.location.href = '/profile';
+                              });
                           } else {
                             alert('Login failed');
                           }
@@ -185,6 +193,8 @@ const Signin = ({ toggleRegister, onSubmit }: Props) => {
                   <FacebookLogin
                     appId="574266017389174"
                     autoLoad={false}
+                    fields="name,email,picture"
+                    scope="email,public_profile"
                     callback={async (response) => {
                       console.log('Facebook callback', response);
                       if ('accessToken' in response) {
@@ -209,12 +219,12 @@ const Signin = ({ toggleRegister, onSubmit }: Props) => {
                     cssClass="login-facebook-btn ant-btn ant-btn-lg ant-btn-block"
                   />
                 </div>
-              </Form>
-            </Content>
+          </Form>
+        </Content>
             <div onClick={toggleRegister} className="log-in-card__toggle login-modern-toggle">
               Not a user yet? <span>Register here</span>
-            </div>
-          </Card>
+        </div>
+      </Card>
         </motion.div>
       </motion.div>
       <div className="login-animated-bg__gradient"></div>

@@ -22,7 +22,6 @@ const initialState: UserState = {
 export const fetchCurrentUser = createAsyncThunk<User>(
   'user/fetchCurrentUser',
   async (_, thunkAPI) => {
-    thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)))
     try {
       const userDto = await agent.Users.currentUser()
       const { basket, courses, ...user } = userDto

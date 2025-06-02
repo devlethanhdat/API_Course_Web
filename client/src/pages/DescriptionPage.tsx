@@ -87,9 +87,9 @@ const DescriptionPage = () => {
     return dayjs(date).format('DD MMM YYYY')
   }
 
-  const bookNow = (id: string) => {
+   const bookNow = (id: string) => {
     if(basket?.items.find((item) => item.courseId === id) === undefined) {
-      dispatch(addBasketItemAsync({ courseId: id }));
+     dispatch(addBasketItemAsync({ courseId: id }));
       toast.success('Added to cart!')
     }
     dispatch(getCourseAsync({ courseId: id }));
@@ -151,7 +151,7 @@ const DescriptionPage = () => {
                     <Tooltip title="Enrolled" placement="top">
                       <span>
                         <FaUsers /> {loading ? <Skeleton width={30} /> : course?.students}
-                      </span>
+              </span>
                     </Tooltip>
                     <Tooltip title="Level" placement="top"><span>{loading ? <Skeleton width={40} /> : course?.level}</span></Tooltip>
                     <Tooltip title="Last updated" placement="top"><span>{loading ? <Skeleton width={80} /> : getParsedDate(course?.lastUpdated)}</span></Tooltip>
@@ -173,7 +173,7 @@ const DescriptionPage = () => {
                           <img alt="course" src={course?.image} className="descpage-image" />
                           <div className="descpage-image-overlay">
                             <PlayCircleOutlined style={{ fontSize: 48, color: '#fff', filter: 'drop-shadow(0 2px 8px #3b82f6)' }} />
-                          </div>
+            </div>
                         </>
                       )}
                     </motion.div>
@@ -199,30 +199,30 @@ const DescriptionPage = () => {
                         {course.sections.map((section: Section, sectionIdx: number) => (
                           <Panel header={section.sectionName} key={sectionIdx}>
                             <ul className="descpage-lecture-list">
-                              {section.lectures.map((lecture: Lecture, idx: number) => (
+                  {section.lectures.map((lecture: Lecture, idx: number) => (
                                 <motion.li key={lecture.id} className="descpage-lecture-item" variants={fadeIn} custom={idx+1} whileHover={{ scale: 1.03, x: 8 }}>
-                                  {sectionIdx === 0 && idx === 0 ? (
+                      {sectionIdx === 0 && idx === 0 ? (
                                     <div className="descpage-lecture-preview">
                                       <PlayCircleOutlined style={{ color: '#52c41a', fontSize: 20, marginRight: 8 }} />
                                       <span className="descpage-lecture-title">{lecture.title}</span>
-                                      {lecture.videoUrl && (
+                          {lecture.videoUrl && (
                                         <div className="descpage-player-wrapper">
                                           <ReactPlayer url={lecture.videoUrl} controls width="100%" height="220px" style={{ borderRadius: 8, marginTop: 12 }} />
                                         </div>
-                                      )}
-                                    </div>
-                                  ) : (
+                          )}
+                        </div>
+                      ) : (
                                     <Tooltip title="Locked. Enroll to unlock!">
                                       <div className="descpage-lecture-locked">
                                         <FaLock color="#888" style={{ marginRight: 8 }} />
                                         <span className="descpage-lecture-title">{lecture.title}</span>
                                         <span className="descpage-locked-label">(Locked)</span>
-                                      </div>
+                        </div>
                                     </Tooltip>
-                                  )}
+                      )}
                                 </motion.li>
-                              ))}
-                            </ul>
+                  ))}
+                </ul>
                           </Panel>
                         ))}
                       </Collapse>
@@ -272,7 +272,7 @@ const DescriptionPage = () => {
                               </span>
                               <Rate disabled value={review.value} style={{ fontSize: 18, marginRight: 8 }} />
                               <span style={{ color: '#888', fontSize: 13 }}>{new Date(review.createdAt).toLocaleDateString()}</span>
-                            </div>
+        </div>
                             <div style={{ fontSize: 16 }}>{review.reviewText}</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 8 }}>
                               <Button
@@ -289,11 +289,11 @@ const DescriptionPage = () => {
                               >
                                 {review.dislikes || 0}
                               </Button>
-                            </div>
-                          </div>
+        </div>
+      </div>
                         ))
                       )}
-                    </div>
+          </div>
                   </motion.div>
                 </Col>
                 <Col xs={24} md={10}>
@@ -303,7 +303,7 @@ const DescriptionPage = () => {
                         <span className="descpage-price-real">{loading ? <Skeleton width={60} /> : `$${course?.price}`}</span>
                         <span className="descpage-price-before">$100</span>
                         <Tag color="red" className="descpage-discount">{loading ? <Skeleton width={40} /> : course && `${Math.floor(100 - course!.price)}% off`}</Tag>
-                      </div>
+          </div>
                       <Divider />
                       <Space direction="vertical" style={{ width: '100%' }}>
                         {isPurchased ? (
@@ -322,18 +322,18 @@ const DescriptionPage = () => {
                             {basket?.items.find((item) => item.courseId === course?.id) !== undefined ? (
                               <Link to="/basket">
                                 <Button type="primary" icon={<ShoppingCartOutlined />} block size="large">
-                                  Go to cart
+                Go to cart
                                 </Button>
-                              </Link>
-                            ) : (
+              </Link>
+            ) : (
                               <Button
                                 type="primary"
                                 icon={<ShoppingCartOutlined />}
                                 block
                                 size="large"
                                 onClick={handleAddToCart}
-                              >
-                                Add to cart
+              >
+                Add to cart
                               </Button>
                             )}
                             <Button
@@ -343,7 +343,7 @@ const DescriptionPage = () => {
                               className="descpage-booknow-btn"
                               onClick={() => bookNow(course!.id)}
                             >
-                              Book now
+              Book now
                             </Button>
                           </>
                         )}
@@ -352,7 +352,7 @@ const DescriptionPage = () => {
                       <div className="descpage-progress">
                         <Text strong>Course Progress</Text>
                         <Progress percent={0} showInfo={false} strokeColor="#52c41a" />
-                      </div>
+            </div>
                     </Card>
                   </motion.div>
                 </Col>

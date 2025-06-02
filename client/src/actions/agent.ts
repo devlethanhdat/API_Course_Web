@@ -132,7 +132,7 @@ const Baskets = {
 }
 
 const Payments = {
-  paymentIntent: () => requests.post<Basket>('payments', {}),
+  paymentIntent: (body = {}) => requests.post('/payments', body),
   confirmPayment: (paymentIntentId: string) =>
     requests.post<Order>('payments/confirm', { paymentIntentId }),
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useAppSelector } from '../../redux/store/configureStore';
-import { BookOutlined, UsergroupAddOutlined, ShoppingCartOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { BookOutlined, UsergroupAddOutlined, ShoppingCartOutlined, AppstoreOutlined, TagOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import './styles/Admin.scss';
 
@@ -41,6 +41,12 @@ const AdminPage = () => {
       description: 'View and manage course orders',
       icon: <ShoppingCartOutlined className="admin-card-icon" />,
       path: '/admin/orders'
+    },
+    {
+      title: 'Manage Coupons',
+      description: 'Add, edit, or remove coupons',
+      icon: <TagOutlined className="admin-card-icon" />,
+      path: '/admin/coupons'
     }
   ];
 

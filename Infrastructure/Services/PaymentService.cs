@@ -18,15 +18,21 @@ namespace Infrastructure.Services
             _context = context;
         }
 
-        public async Task<PaymentIntent> PaymentIntentAsync(Basket basket)
+        public async Task<PaymentIntent> PaymentIntentAsync(Basket basket, decimal discount = 0)
         {
+            var total = (decimal)basket.Items.Sum(i => i.Course.Price) - discount;
+            if (total < 0) total = 0;
+
+            // Stripe yêu cầu tối thiểu 10,000 VND
+            if (total < 10000) total = 10000;
+
             var secretKey = _config["Stripe:ClientSecret"];
             StripeConfiguration.ApiKey = secretKey;
             var service = new PaymentIntentService();
 
             var options = new PaymentIntentCreateOptions
             {
-                Amount = (long)(basket.Items.Sum(item => item.Course.Price) * 100),
+                Amount = (long)(total * 100), // Stripe expects amount in the smallest currency unit
                 Currency = "usd",
                 PaymentMethodTypes = new List<string> { "card" }
             };
@@ -56,12 +62,18 @@ namespace Infrastructure.Services
 
             if (basket == null) return null;
 
+            // Lấy discount từ basket nếu đã lưu, hoặc truyền vào hàm
+            var discount = basket.Discount; // Nếu bạn đã lưu vào basket
+            var total = (decimal)basket.Items.Sum(i => i.Course.Price) - discount;
+            if (total < 0) total = 0;
+            if (total < 10000) total = 10000;
+
             // Create payment
             var payment = new StripePayment
             {
                 PaymentIntentId = paymentIntentId,
                 UserId = userId,
-                Amount = (long)basket.Items.Sum(i => i.Course.Price),
+                Amount = (long)total,
                 Status = "Completed",
                 CreatedAt = DateTime.UtcNow,
                 ClientSecret = paymentIntent.ClientSecret
@@ -73,7 +85,7 @@ namespace Infrastructure.Services
                 UserId = userId,
                 PaymentIntentId = paymentIntentId,
                 Status = "Completed",
-                Total = (long)basket.Items.Sum(i => i.Course.Price),
+                Total = (long)total,
                 CreatedAt = DateTime.UtcNow,
                 StripePayment = payment,
                 OrderItems = basket.Items.Select(item => new OrderItem

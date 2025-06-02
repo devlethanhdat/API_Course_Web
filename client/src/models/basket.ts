@@ -3,6 +3,7 @@ export interface Basket {
   items: CourseItem[]
   paymentIntentId?: string
   clientSecret?: string
+  discount?: number
 }
 
 export interface CourseItem {

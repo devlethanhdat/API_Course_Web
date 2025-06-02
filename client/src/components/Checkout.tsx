@@ -6,12 +6,16 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js'
 import { Card, Form, Input, notification } from 'antd'
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import agent from '../actions/agent'
 import CheckoutSummary from '../components/CheckoutSummary'
 import { removeBasket } from '../redux/slice/basketSlice'
 import { useAppDispatch, useAppSelector } from '../redux/store/configureStore'
+import { setBasket } from '../redux/slice/basketSlice'
+
+const discountData = JSON.parse(localStorage.getItem('appliedDiscount') || '{}');
+const discount = discountData.discount || 0;
 
 const CheckoutPage = () => {
   const [cardName, setCardName] = useState<string>('')
@@ -74,6 +78,7 @@ const CheckoutPage = () => {
             description: 'Your payment has been processed successfully',
           })
           history.push('/profile')
+         
         } catch (err) {
           notification.error({
             message: 'Order Save Failed',
@@ -92,6 +97,8 @@ const CheckoutPage = () => {
       setIsLoading(false)
     }
   }
+
+
 
   return (
     <>

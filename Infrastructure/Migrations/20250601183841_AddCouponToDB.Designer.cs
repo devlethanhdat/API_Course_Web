@@ -3,6 +3,7 @@ using System;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250601183841_AddCouponToDB")]
+    partial class AddCouponToDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +38,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("ClientSecret")
                         .HasColumnType("text");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("numeric");
 
                     b.Property<string>("PaymentIntentId")
                         .HasColumnType("text");
@@ -488,13 +488,13 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "87c4762e-66e2-4413-8c9f-327fd48d6a95",
+                            Id = "9cf087fd-a42e-4eec-b6c8-f9b33057dc06",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "8d2b3782-6af3-423e-833f-02e149e1a9dd",
+                            Id = "a6c0c5d4-780f-42a1-8797-21068342d0d0",
                             Name = "Instructor",
                             NormalizedName = "INSTRUCTOR"
                         });

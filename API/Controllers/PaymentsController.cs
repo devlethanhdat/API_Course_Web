@@ -31,23 +31,39 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<BasketDto>> PaymentIntentAsync()
+        public async Task<ActionResult<BasketDto>> PaymentIntentAsync([FromBody] CreatePaymentIntentDto dto)
         {
             try 
             {
+               Console.WriteLine("CouponCode: " + dto?.CouponCode);
                 var basket = await ExtractBasket(User.Identity.Name);
                 if (basket == null) return NotFound();
 
-                var intent = await _paymentService.PaymentIntentAsync(basket);
+                decimal discount = 0;
+                if (!string.IsNullOrEmpty(dto?.CouponCode))
+                {
+                    var coupon = await _context.Coupons
+                        .FirstOrDefaultAsync(c => c.Code == dto.CouponCode && c.IsActive && (c.ExpiryDate == null || c.ExpiryDate > DateTime.UtcNow));
+                    if (coupon != null)
+                    {
+                        discount = coupon.DiscountAmount;
+                    }
+                }
+
+                var intent = await _paymentService.PaymentIntentAsync(basket, discount);
                 
                 // Always update with new payment intent
                 basket.PaymentIntentId = intent.Id;
                 basket.ClientSecret = intent.ClientSecret;
+                basket.Discount = discount;
 
                 _context.Update(basket);
                 await _context.SaveChangesAsync();
 
-                return _mapper.Map<Basket, BasketDto>(basket);
+                // Trả về discount để FE hiển thị
+                var basketDto = _mapper.Map<Basket, BasketDto>(basket);
+                basketDto.Discount = discount;
+                return basketDto;
             }
             catch (Exception ex)
             {

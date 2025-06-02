@@ -13,11 +13,17 @@ const stripePromise = loadStripe(
 export default function CheckoutWrapper() {
   const dispatch = useAppDispatch()
 
+  const discountData = JSON.parse(localStorage.getItem('appliedDiscount') || '{}');
+  const discount = discountData.discount || 0;
+  const couponCode = discountData.code || '';
+
   useEffect(() => {
-    agent.Payments.paymentIntent()
-      .then((basket) => dispatch(setBasket(basket)))
+    agent.Payments.paymentIntent({ couponCode })
+      .then((basket) => {
+        dispatch(setBasket(basket))
+      })
       .catch((error) => console.log(error))
-  }, [dispatch])
+  }, [dispatch, couponCode])
 
   return (
     <Elements stripe={stripePromise}>

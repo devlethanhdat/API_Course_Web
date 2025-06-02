@@ -89,6 +89,18 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpPost("apply-coupon")]
+        public async Task<ActionResult<decimal>> ApplyCoupon([FromBody] ApplyCouponDto dto)
+        {
+            var coupon = await _context.Coupons
+                .FirstOrDefaultAsync(c => c.Code == dto.Code && c.IsActive && (c.ExpiryDate == null || c.ExpiryDate > DateTime.UtcNow));
+            if (coupon == null)
+                return BadRequest(new { error = "Mã giảm giá không hợp lệ hoặc đã hết hạn." });
+
+            // Có thể lưu coupon vào basket nếu muốn, hoặc chỉ trả về discount
+            return Ok(new { discount = coupon.DiscountAmount });
+        }
+
         private Basket CreateBasket()
         {
             var clientId = User.Identity?.Name;

@@ -214,8 +214,10 @@ namespace API.Controllers
                     $"https://graph.facebook.com/me?fields=id,name,email,picture&access_token={dto.Token}");
                 var fbUser = JsonDocument.Parse(fbRes).RootElement;
 
-                var email = fbUser.GetProperty("email").GetString();
-                var name = fbUser.GetProperty("name").GetString();
+                var email = fbUser.TryGetProperty("email", out var emailProp) ? emailProp.GetString() : null;
+                var name = fbUser.TryGetProperty("name", out var nameProp) ? nameProp.GetString() : null;
+                if (string.IsNullOrEmpty(email))
+                    return Unauthorized(new ApiResponse(401, "Facebook account does not provide email. Please use another account."));
 
                 var user = await _userManager.FindByEmailAsync(email);
                 if (user == null)

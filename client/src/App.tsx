@@ -33,6 +33,7 @@ import banner2 from './assets/475eb095746151.5e9ecde695f7a.gif';
 import banner3 from './assets/34220e95746151.5e9ecde696cb0.gif';
 import banner4 from './assets/fe441235d728b50c6003b3e59cd807cb.gif';
 import OrdersPage from './pages/Admin/Orders/Orders';
+import CouponList from './pages/Admin/Coupons/CouponList';
 
 const bannerImages = [banner4,banner4,banner4,banner4];
 const bannerImages1 = [banner1];
@@ -124,6 +125,12 @@ function App() {
           exact
           path="/admin/orders"
           component={OrdersPage}
+          roles={['Admin']}
+        />
+        <PrivateRoute
+          exact
+          path="/admin/coupons"
+          component={CouponList}
           roles={['Admin']}
         />
         <Route path="/admin" exact component={AdminPage} />
