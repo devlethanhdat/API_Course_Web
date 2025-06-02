@@ -28,21 +28,6 @@ const InstructorPage = () => {
     totalCourses: 0
   });
 
-  const chartData = [
-    { date: '2023-01', students: 35 },
-    { date: '2023-02', students: 45 },
-  ];
-
-  const chartConfig = {
-    data: chartData,
-    xField: 'date',
-    yField: 'students',
-    smooth: true,
-    areaStyle: {
-      fill: 'l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
-    }
-  };
-
   const [studentCounts, setStudentCounts] = useState<CourseStudentCountDto[]>([]);
   const [revenues, setRevenues] = useState<CourseRevenueDto[]>([]);
   const [orderTrends, setOrderTrends] = useState<OrderTrendDto[]>([]);
@@ -122,9 +107,9 @@ const InstructorPage = () => {
           image={Empty.PRESENTED_IMAGE_DEFAULT}
           description={
             <Space direction="vertical" align="center" size="large">
-              <Text>You haven't created any courses yet</Text>
+              <Text>Bạn chưa tạo khóa học nào</Text>
               <Button type="primary" size="large" onClick={makeCourse}>
-                Create Your First Course
+                Tạo khóa học đầu tiên
               </Button>
             </Space>
           }
@@ -147,18 +132,18 @@ const InstructorPage = () => {
               cover={
                 <div className="card-cover">
                   <img alt={course.title} src={course.image} />
-                  <div className="card-status">Draft</div>
+                  <div className="card-status">Bản nháp</div>
                 </div>
               }
               actions={[
-                <Tooltip title="Edit Course">
+                <Tooltip title="Chỉnh sửa khóa học">
                   <Button 
                     type="text" 
                     icon={<EditOutlined />}
                     onClick={() => handleEdit(course.id)}
                   />
                 </Tooltip>,
-                <Tooltip title="Delete Course">
+                <Tooltip title="Xóa khóa học">
                   <Button 
                     type="text" 
                     danger
@@ -169,7 +154,7 @@ const InstructorPage = () => {
                     }}
                   />
                 </Tooltip>,
-                <Tooltip title="View Lectures">
+                <Tooltip title="Xem bài giảng">
                   <Link to={`${course.id}/lectures`}>
                     <Button type="text" icon={<EyeOutlined />} />
                   </Link>
@@ -193,6 +178,16 @@ const InstructorPage = () => {
 
   console.log('revenues:', revenues);
 
+  // Sử dụng orderTrendData thực tế cho Area chart
+  const areaChartConfig = {
+    data: orderTrendData,
+    xField: 'date',
+    yField: 'orders',
+    smooth: true,
+    color: '#f857a6',
+    areaStyle: { fill: '#fda085', fillOpacity: 0.5 },
+  };
+
   return (
     <motion.div 
       className="instructor-dashboard"
@@ -205,8 +200,8 @@ const InstructorPage = () => {
         className="dashboard-header"
       >
         <Space direction="vertical">
-          <Title level={2}>Welcome Back, Instructor!</Title>
-          <Text type="secondary">Here's what's happening with your courses</Text>
+          <Title level={2}>Chào mừng trở lại, Giảng viên!</Title>
+          <Text type="secondary">Tổng quan về các khóa học của bạn</Text>
         </Space>
       </motion.div>
 
@@ -215,7 +210,7 @@ const InstructorPage = () => {
           <motion.div whileHover={{ scale: 1.03 }}>
             <Card className="stat-card">
               <Statistic 
-                title="Total Students"
+                title="Tổng số học viên"
                 value={stats.totalStudents}
                 prefix={<UsergroupAddOutlined />}
                 formatter={(value) => <CountUp end={Number(value)} duration={2.5} />}
@@ -227,7 +222,7 @@ const InstructorPage = () => {
           <motion.div whileHover={{ scale: 1.03 }}>
             <Card className="stat-card">
               <Statistic 
-                title="Total Revenue"
+                title="Tổng doanh thu"
                 value={stats.totalRevenue}
                 prefix={<DollarOutlined />}
                 formatter={(value) => <CountUp end={Number(value)} duration={2.5} />}
@@ -239,7 +234,7 @@ const InstructorPage = () => {
           <motion.div whileHover={{ scale: 1.03 }}>
             <Card className="stat-card">
               <Statistic 
-                title="Total Courses"
+                title="Tổng số khóa học"
                 value={stats.totalCourses}
                 prefix={<BookOutlined />}
                 formatter={(value) => <CountUp end={Number(value)} duration={2.5} />}
@@ -250,37 +245,39 @@ const InstructorPage = () => {
       </Row>
 
       <Card className="chart-section">
-        <Title level={4}>Student Enrollment Trends</Title>
-        <Area {...chartConfig} />
+        <Title level={4}>Biểu đồ số lượng học viên đăng ký</Title>
+        <Area {...areaChartConfig} />
       </Card>
 
       <Card className="chart-section">
-        <Title level={4}>Student Count by Course</Title>
+        <Title level={4}>Số học viên theo từng khóa học</Title>
         <Bar
           data={studentCounts}
           xField="studentCount"
           yField="courseTitle"
           seriesField="courseTitle"
-          legend={false}
+          color={['#36cfc9', '#fda085', '#a259f7', '#ff9800', '#e00ed2']}
         />
       </Card>
 
       <Card className="chart-section">
-        <Title level={4}>Revenue by Course</Title>
+        <Title level={4}>Doanh thu theo từng khóa học</Title>
         <Pie
           data={revenues}
           angleField="revenue"
           colorField="courseTitle"
           label={false}
+          color={['#fda085', '#a259f7', '#36cfc9', '#ff9800', '#e00ed2']}
         />
       </Card>
 
       <Card className="chart-section">
-        <Title level={4}>Order Trends</Title>
+        <Title level={4}>Xu hướng đơn hàng</Title>
         <Column
           data={orderTrendData}
           xField="date"
           yField="orders"
+          color="#a259f7"
         />
       </Card>
 
@@ -288,7 +285,7 @@ const InstructorPage = () => {
         <div className="section-header">
           <Space align="center">
             <BookOutlined className="section-icon" />
-            <Title level={3} style={{ margin: 0 }}>Your Courses</Title>
+            <Title level={3} style={{ margin: 0 }}>Các khóa học của bạn</Title>
           </Space>
           <Button 
             type="primary"
@@ -296,7 +293,7 @@ const InstructorPage = () => {
             icon={<PlusOutlined />}
             onClick={makeCourse}
           >
-            Create New Course
+            Tạo khóa học mới
           </Button>
         </div>
         {renderCourseCards()}

@@ -13,6 +13,7 @@ interface Props {
 
 const ShowCourses = ({ course, noCol }: Props) => {
   const [spanVal, setSpanVal] = useState<number>()
+  const [avgRating, setAvgRating] = useState<number | null>(null);
 
   const { basket } = useAppSelector((state) => state.basket)
   const dispatch = useAppDispatch()
@@ -38,16 +39,28 @@ const ShowCourses = ({ course, noCol }: Props) => {
     checkWidth()
   }, [])
 
-  const showStars = (rating: number): [] => {
-    const options: any = []
-    for (let i = 1; i < rating; i++) {
-      options.push(<FaIcons.FaStar key={i} />)
-      if (rating - i < 1 && rating - i > 0.3) {
-        options.push(<FaIcons.FaStarHalf key={i + 1} />)
+  useEffect(() => {
+    if (course && course.id) {
+      fetch(`http://localhost:5001/api/courses/${course.id}/ratings`)
+        .then(res => res.json())
+        .then(data => setAvgRating(data.avg))
+        .catch(() => setAvgRating(null));
+    }
+  }, [course]);
+
+  const showStars = (rating: number): JSX.Element[] => {
+    const options: JSX.Element[] = [];
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        options.push(<FaIcons.FaStar key={i} />);
+      } else if (rating > i - 1 && rating < i) {
+        options.push(<FaIcons.FaStarHalf key={i} />);
+      } else {
+        options.push(<FaIcons.FaRegStar key={i} />);
       }
     }
-    return options
-  }
+    return options;
+  };
 
   const card = (
         <Card
@@ -58,13 +71,13 @@ const ShowCourses = ({ course, noCol }: Props) => {
           <Link to={`/course/${course.id}`}>
             <div className="course__title">{course.title}</div>
           </Link>
-          <div className="course__instructor">{course.instructor}</div>
+          <div className="course__instructor">Giảng viên: {course.instructor}</div>
           <div className="course__rating">
-            {course.rating}
-            <span>{showStars(course.rating)}</span>
+            {avgRating !== null ? avgRating.toFixed(1) : '...'}
+            <span>{showStars(avgRating || 0)}</span>
           </div>
           <div className="course__bottom">
-            <div className="course__bottom__price">{course.price}</div>
+            <div className="course__bottom__price">{course.price}&nbsp;VNĐ</div>
         {userCourses?.find((item) => item.id === course.id) !== undefined ? (
               <Link to={`/learn/${course.id}/${currentLecture}`}>
                 <div className="course__bottom__cart">Go to Course</div>
@@ -80,7 +93,7 @@ const ShowCourses = ({ course, noCol }: Props) => {
                 }}
                 className="course__bottom__cart"
               >
-                Add to cart
+               Add To 🛒
               </div>
             )}
           </div>

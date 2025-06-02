@@ -98,7 +98,7 @@ const CreateCourse = () => {
   const uploadButton = (
     <div>
       {imageLoading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
+      <div style={{ marginTop: 8 }}>Tải ảnh</div>
     </div>
   );
 
@@ -111,24 +111,24 @@ const CreateCourse = () => {
     console.log(payload);
     const response = await agent.Courses.create(payload);
     notification.success({
-      message: response,
+      message: 'Tạo khóa học thành công!',
     });
     history.push("/instructor");
   };
 
   const steps = [
     {
-      title: 'Basic Info',
+      title: 'Thông tin cơ bản',
       icon: <FileTextOutlined />,
       content: (
         <Card className="form-card">
-          <Form.Item name="title" label="Course Title" rules={[{ required: true, min: 10 }]}>
-            <Input className="styled-input" onChange={handleChange} name="title" value={title} />
+          <Form.Item name="title" label="Tiêu đề khóa học" rules={[{ required: true, min: 10, message: 'Tiêu đề tối thiểu 10 ký tự' }]}> 
+            <Input className="styled-input" onChange={handleChange} name="title" value={title} placeholder="Nhập tiêu đề khóa học" />
           </Form.Item>
-          <Form.Item name="subTitle" label="Course Subtitle" rules={[{ required: true, min: 10 }]}>
-            <Input className="styled-input" onChange={handleChange} name="subTitle" value={subTitle} />
+          <Form.Item name="subTitle" label="Mô tả ngắn" rules={[{ required: true, min: 10, message: 'Mô tả tối thiểu 10 ký tự' }]}> 
+            <Input className="styled-input" onChange={handleChange} name="subTitle" value={subTitle} placeholder="Nhập mô tả ngắn" />
           </Form.Item>
-          <Form.Item name="description" label="Description" rules={[{ required: true }]}>
+          <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, message: 'Vui lòng nhập mô tả chi tiết' }]}> 
             <Editor
               apiKey="h8wvot79f147p7qnqy9ilf18w3mcegx8qqt3qvgr94kxjn6r"
               value={String(description || '')}
@@ -156,57 +156,74 @@ const CreateCourse = () => {
       ),
     },
     {
-      title: 'Course Details',
+      title: 'Chi tiết khóa học',
       icon: <DollarOutlined />,
       content: (
         <Card className="form-card">
-          <Form.Item name="price" label="Price ($)" rules={[{ required: true }]}>
+          <Form.Item name="price" label="Giá (VNĐ)" rules={[{ required: true, message: 'Vui lòng nhập giá' }]}> 
             <InputNumber 
               className="styled-input"
               min={0}
               onChange={(value) => setValues({ ...values, price: value ?? 0 })}
               value={price}
+              placeholder="Nhập giá khóa học"
             />
           </Form.Item>
-          <Form.Item name="category" label="Category" rules={[{ required: true }]}>
+          <Form.Item name="category" label="Danh mục" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}> 
             <Select
               className="styled-select"
               options={getSelectCategories()}
               onChange={(value) => setValues({ ...values, category: Number(value) })}
               value={category}
+              placeholder="Chọn danh mục"
             />
           </Form.Item>
-          <Form.Item name="level" label="Level" rules={[{ required: true }]}>
+          <Form.Item name="level" label="Trình độ" rules={[{ required: true, message: 'Vui lòng chọn trình độ' }]}> 
             <Select
               className="styled-select"
               onChange={(value) => setValues({ ...values, level: value })}
               value={level}
+              placeholder="Chọn trình độ"
             >
-              <Select.Option value="Beginner">Beginner</Select.Option>
-              <Select.Option value="Intermediate">Intermediate</Select.Option>
-              <Select.Option value="Advanced">Advanced</Select.Option>
+              <Select.Option value="Beginner">Cơ bản</Select.Option>
+              <Select.Option value="Intermediate">Trung cấp</Select.Option>
+              <Select.Option value="Advanced">Nâng cao</Select.Option>
+              <Select.Option value="Expert">Chuyên sâu</Select.Option>
+              <Select.Option value="All">Tất cả</Select.Option>
+              
             </Select>
           </Form.Item>
-          <Form.Item name="language" label="Language" rules={[{ required: true }]}>
+          <Form.Item name="language" label="Ngôn ngữ" rules={[{ required: true, message: 'Vui lòng chọn ngôn ngữ' }]}> 
             <Select
               className="styled-select"
               onChange={(value) => setValues({ ...values, language: value })}
               value={language}
+              placeholder="Chọn ngôn ngữ"
             >
-              <Select.Option value="English">English</Select.Option>
-              <Select.Option value="Vietnamese">Vietnamese</Select.Option>
-              <Select.Option value="Japanese">Japanese</Select.Option>
+              <Select.Option value="English">Tiếng Anh</Select.Option>
+              <Select.Option value="Vietnamese">Tiếng Việt</Select.Option>
+              <Select.Option value="Japanese">Tiếng Nhật</Select.Option>
+              <Select.Option value="Korean">Tiếng Hàn</Select.Option>
+              <Select.Option value="Chinese">Tiếng Trung</Select.Option>
+              <Select.Option value="French">Tiếng Pháp</Select.Option>
+              <Select.Option value="German">Tiếng Đức</Select.Option>
+              <Select.Option value="Spanish">Tiếng Tây Ban Nha</Select.Option>
+              <Select.Option value="Italian">Tiếng Ý</Select.Option>  
+              <Select.Option value="Russian">Tiếng Nga</Select.Option>
+              <Select.Option value="Portuguese">Tiếng Bồ Đào Nha</Select.Option>
+            
+
             </Select>
           </Form.Item>
         </Card>
       ),
     },
     {
-      title: 'Course Media',
+      title: 'Hình ảnh khóa học',
       icon: <PictureOutlined />,
       content: (
         <Card className="form-card">
-          <Form.Item name="image" label="Course Image" rules={[{ required: true }]}>
+          <Form.Item name="image" label="Ảnh khóa học" rules={[{ required: true, message: 'Vui lòng tải lên ảnh' }]}> 
             <div className="upload-container">
               <Upload
                 name="image"
@@ -217,12 +234,12 @@ const CreateCourse = () => {
                 beforeUpload={(file) => {
                   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
                   if (!isJpgOrPng) {
-                    notification.error({ message: 'You can only upload JPG/PNG files!' });
+                    notification.error({ message: 'Chỉ được phép tải lên file JPG/PNG!' });
                     return false;
                   }
                   const isLt2M = file.size / 1024 / 1024 < 2;
                   if (!isLt2M) {
-                    notification.error({ message: 'Image must be smaller than 2MB!' });
+                    notification.error({ message: 'Ảnh phải nhỏ hơn 2MB!' });
                     return false;
                   }
                   return true;
@@ -244,8 +261,8 @@ const CreateCourse = () => {
   return (
     <div className="create-course-container">
       <Card className="main-card">
-        <h1 className="page-title">Create Course</h1>
-        <div className="page-subtitle">Follow the steps to create your course</div>
+        <h1 className="page-title">Tạo khóa học</h1>
+        <div className="page-subtitle">Làm theo các bước để tạo khóa học của bạn</div>
         
         <Steps current={currentStep} className="course-steps">
           {steps.map(item => (
@@ -264,17 +281,17 @@ const CreateCourse = () => {
           <div className="steps-action">
             {currentStep > 0 && (
               <Button className="prev-button" onClick={() => setCurrentStep(current => current - 1)}>
-                Previous
+                Quay lại
               </Button>
             )}
             {currentStep < steps.length - 1 && (
               <Button type="primary" onClick={() => setCurrentStep(current => current + 1)}>
-                Next
+                Tiếp theo
               </Button>
             )}
             {currentStep === steps.length - 1 && (
               <Button type="primary" htmlType="submit" className="submit-button">
-                Create Course
+                Tạo khóa học
               </Button>
             )}
           </div>

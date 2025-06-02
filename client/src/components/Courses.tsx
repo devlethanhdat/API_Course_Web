@@ -9,6 +9,7 @@ const Courses = () => {
   const [data, setData] = useState<PaginatedCourse>()
   const [spanVal, setSpanVal] = useState<number>()
   const [loading, setLoading] = useState(false)
+  const [avgRatings, setAvgRatings] = useState<{ [key: string]: number }>({})
 
   const checkWidth = (): void => {
     if (window.innerWidth > 1024) {
@@ -34,16 +35,40 @@ const Courses = () => {
     checkWidth()
   }, [])
 
-  const showStars = (rating: number): [] => {
-    const options: any = []
-    for (let i = 1; i < rating; i++) {
-      options.push(<FaIcons.FaStar key={i} />)
-      if (rating - i < 1 && rating - i > 0.3) {
-        options.push(<FaIcons.FaStarHalf key={i + 1} />)
+  useEffect(() => {
+    if (data && data.data && data.data.length > 0) {
+      data.data.forEach((course: Course) => {
+        console.log('Course:', course);
+        fetch(`http://localhost:5001/api/courses/${course.id}/ratings`)
+          .then(res => {
+            console.log('Fetch rating for', course.id, res.status);
+            return res.json();
+          })
+          .then(ratingData => {
+            console.log('Rating data for', course.id, ratingData);
+            setAvgRatings(prev => ({ ...prev, [course.id]: ratingData.avg }));
+          })
+          .catch(err => console.error('Error fetching rating for', course.id, err));
+      });
+    }
+  }, [data]);
+
+  const showStars = (rating: number): JSX.Element[] => {
+    const options: JSX.Element[] = [];
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        options.push(<FaIcons.FaStar key={i} />);
+      } else if (rating > i - 1 && rating < i) {
+        options.push(<FaIcons.FaStarHalf key={i} />);
+      } else {
+        options.push(<FaIcons.FaRegStar key={i} />);
       }
     }
-    return options
-  }
+    return options;
+  };
+
+  console.log('data', data);
+  console.log('avgRatings', avgRatings);
 
   return (
     <div className="course">
@@ -66,8 +91,8 @@ const Courses = () => {
                   <div className="course__title">{course.title} </div>
                   <div className="course__instructor">{course.instructor} </div>
                   <div className="course__rating">
-                    {course.rating}
-                    <span> {showStars(course.rating)}</span>
+                    {avgRatings[course.id] ? avgRatings[course.id].toFixed(1) : '...'}
+                    <span> {showStars(avgRatings[course.id] || 0)}</span>
                   </div>
                   <div className="course__price">{`$ ${course.price}`}</div>
                 </Card>
@@ -80,3 +105,4 @@ const Courses = () => {
 }
 
 export default Courses
+

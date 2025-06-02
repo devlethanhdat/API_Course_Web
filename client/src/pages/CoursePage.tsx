@@ -66,7 +66,11 @@ const CoursePage = ({ match }: RouteComponentProps<any>) => {
 
   useEffect(() => {
     const fetchRatings = async () => {
-      const res = await fetch(`/api/courses/${match.params.course}/ratings`);
+      const res = await fetch(`http://localhost:5001/api/courses/${match.params.course}/ratings`, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      });
       const data = await res.json();
       setAvgRating(data.avg);
       setRatingCount(data.count);
@@ -254,7 +258,11 @@ const CoursePage = ({ match }: RouteComponentProps<any>) => {
                     setUserRating(tempRating);
                     Modal.success({ title: 'Cảm ơn bạn đã đánh giá!' });
                     // Cập nhật lại rating
-                    const res = await fetch(`/api/courses/${match.params.course}/ratings`);
+                    const res = await fetch(`http://localhost:5001/api/courses/${match.params.course}/ratings`, {
+                      headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                      }
+                    });
                     const data = await res.json();
                     setAvgRating(data.avg);
                     setRatingCount(data.count);

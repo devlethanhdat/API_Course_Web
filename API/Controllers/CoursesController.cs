@@ -514,5 +514,19 @@ namespace API.Controllers
             });
         }
 
+        [HttpGet("{id}/stats")]
+        public async Task<IActionResult> GetCourseStats(Guid id)
+        {
+            // Đếm số user đã mua khóa học này
+            var studentCount = await _context.UserCourses
+                .Where(uc => uc.CourseId == id)
+                .Select(uc => uc.UserId)
+                .Distinct()
+                .CountAsync();
+
+            // Có thể trả về thêm các stats khác nếu muốn
+            return Ok(new { studentCount });
+        }
+
     }
 }
